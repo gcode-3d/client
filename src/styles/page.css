@@ -1,0 +1,15 @@
+.sidebar {
+  width: 50px;
+  height: calc(100vh - 50px);
+  background-color: #373333;
+  flex-shrink: 0;
+}
+
+.page {
+  display: flex;
+  flex-direction: row;
+}
+
+.page-content {
+  width: 100%;
+}

@@ -1,0 +1,43 @@
+.modal {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 40;
+}
+.modal .modal-background {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal .modal-content {
+  position: relative;
+}
+
+.modal .modal-content .modal-box {
+  background-color: #373333;
+  color: white;
+  padding: 1.25rem;
+  border-radius: 6px;
+  min-width: 250px;
+}
+
+.modal .modal-content .modal-box button {
+  background-color: #b94c4c;
+  border-radius: 4px;
+  padding: 0.6rem 1rem;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+.modal .modal-content .modal-box button svg {
+  margin-right: 7px;
+}

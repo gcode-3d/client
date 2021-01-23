@@ -1,0 +1,32 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "start": "parcel index.html -p 80",
+    "build": "parcel build index.html"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.34",
+    "@fortawesome/pro-regular-svg-icons": "^5.15.2",
+    "@fortawesome/pro-solid-svg-icons": "^5.15.2",
+    "@fortawesome/react-fontawesome": "^0.1.14",
+    "postcss-modules": "^4.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.2.3",
+    "babel-preset-nano-react-app": "^0.1.0",
+    "parcel": "^2.0.0-alpha.3.2",
+    "precss": "^4.0.0",
+    "sass": "^1.32.5"
+  },
+  "babel": {
+    "presets": [
+      "nano-react-app"
+    ]
+  }
+}
