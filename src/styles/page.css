@@ -38,5 +38,7 @@
 }
 
 .page-content {
-  width: 100%;
+  width: calc(100% - 3.25em);
+  padding: 1em;
+  text-align: center;
 }

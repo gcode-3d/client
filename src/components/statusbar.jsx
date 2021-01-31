@@ -8,6 +8,7 @@ import StatusBarItem from "./statusbarItem";
 import { Link } from "react-router-dom";
 
 export default function StatusBar() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const connectionContext = useContext(ConnectionContext);
   const userContent = (
     <StatusBarItem icon={<FontAwesomeIcon icon={faUser} />} onClick={logout}>
@@ -22,7 +23,22 @@ export default function StatusBar() {
           <FontAwesomeIcon icon={faCube} size={"lg"} />
         </Link>
       </div>
-      <div className="navbar-menu">
+      <a
+        role="button"
+        className="navbar-burger"
+        data-target="navMenu"
+        aria-label="menu"
+        aria-expanded="false"
+        onClick={() => {
+          setMenuOpen(!menuOpen);
+        }}
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+
+      <div className={"navbar-menu " + (menuOpen && "is-active")}>
         <div className="navbar-end">
           {getStateItem(connectionContext.state)}
           {connectionContext.user == null ? null : userContent}

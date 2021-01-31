@@ -28,3 +28,32 @@ a {
 .icon-text .icon {
   margin-right: 0.2rem;
 }
+
+@media screen and (max-width: $desktop) {
+  .navbar-burger {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .navbar-menu.is-active {
+    text-align: right;
+    margin-left: 3.25em;
+    border-left: 1px #b94c4c solid;
+    border-bottom: 1px #b94c4c solid;
+    background-color: #373333;
+    width: calc(100% - 3.25em);
+    position: absolute;
+    box-shadow: rgba(0, 0, 0, 0.2) 3px 3px 3px;
+  }
+  a.navbar-item:hover {
+    background-color: #595959;
+    color: #b94c4c;
+  }
+
+  .navbar-menu .navbar-end {
+    margin-right: 1em;
+    display: flex;
+    flex-direction: column;
+    margin-right: 1em !important;
+  }
+}
