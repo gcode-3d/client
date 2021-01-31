@@ -1,18 +1,38 @@
 import React, { Suspense, useEffect, useState } from "react";
 import Emitter from "./tools/emitter";
-import IndexPage from "../src/pages/index";
 import PageManager from "./components/pagemanager";
 import ConnectionError from "./pages/connectionError";
+import Setup from "./pages/setup";
+import LoginScreen from "./pages/login";
 let connection;
 
 export default function App() {
   const [ws, setWS] = useState(null);
-  const [isSocketOpen, setSocketState] = useState(false);
+  const [socketDetails, setSocketDetails] = useState(false);
+  const [isAuthenticated, setAuthenticatedState] = useState(false);
+
   useEffect(() => {
-    let interval = connect();
     Emitter.on("client.tryConnect", checkAndTryReconnect);
-    return cleanup(interval);
+    return handleLogin();
   }, []);
+
+  function handleLogin() {
+    var token = getToken();
+    if (token) {
+      setAuthenticatedState(true);
+      let interval = connect();
+      return cleanup(interval);
+    } else {
+      setAuthenticatedState(false);
+    }
+  }
+  function getToken() {
+    if (window.localStorage.getItem("auth") !== null) {
+      return window.localStorage.getItem("auth");
+    } else if (window.sessionStorage.getItem("auth") !== null) {
+      return window.sessionStorage.getItem("auth");
+    }
+  }
 
   const cleanup = (interval) => {
     Emitter.removeListener("client.tryConnect", checkAndTryReconnect);
@@ -23,7 +43,9 @@ export default function App() {
     }
   };
   const connect = () => {
-    let socket = new WebSocket("ws://localhost:8000/ws");
+    let socket = new WebSocket("ws://localhost:8000/ws", [
+      `auth-${getToken()}`,
+    ]);
     let connectInterval;
 
     socket.onopen = () => {
@@ -33,22 +55,20 @@ export default function App() {
       socket.onmessage = handleMessage;
 
       Emitter.emit("socket.open");
-      setSocketState(true);
 
       this.timeout = 250;
       clearTimeout(connectInterval);
     };
 
-    socket.onclose = (e) => {
+    socket.onclose = () => {
       Emitter.emit("socket.closed");
-      setSocketState(false);
+      setSocketDetails(null);
 
       console.log(
         `Websocket closed. Reconnect attempt in: ${Math.min(
           10000 / 1000,
           (this.timeout + this.timeout) / 1000
-        )}`,
-        e.reason
+        )}`
       );
       this.timeout += this.timeout;
       connectInterval = setTimeout(
@@ -68,29 +88,38 @@ export default function App() {
       connect();
     }
   };
+  function handleMessage(message) {
+    let data = message.data;
+    Emitter.emit("socket.rawMessage", data);
+    try {
+      data = JSON.parse(data);
+    } catch (e) {
+      console.error(e);
+      return;
+    }
+    console.log(data);
+    switch (data.type) {
+      case "ready":
+        Emitter.emit("server.ready", data.content);
+        setSocketDetails(data.content);
+        break;
+      default:
+        console.error("Unknown data event type: " + data.type);
+    }
+  }
 
-  if (isSocketOpen) {
-    return <PageManager />;
-  } else {
+  if (!isAuthenticated) {
+    return <LoginScreen callback={handleLogin} />;
+  }
+  if (!socketDetails) {
     return <ConnectionError />;
-  }
-}
-
-function handleMessage(message) {
-  let data = message.data;
-  Emitter.emit("socket.rawMessage", data);
-  try {
-    data = JSON.parse(data);
-  } catch (e) {
-    console.error(e);
-    return;
-  }
-  console.log(data);
-  switch (data.type) {
-    case "ready":
-      Emitter.emit("server.ready", data.content);
-      break;
-    default:
-      console.error("Unknown data event type: " + data.type);
+  } else if (socketDetails.user != null) {
+    return (
+      <PageManager user={socketDetails.user} state={socketDetails.state} />
+    );
+  } else if (socketDetails.setup === true) {
+    return <Setup />;
+  } else {
+    return <h1>Something went wrong, try again later.</h1>;
   }
 }

@@ -1,5 +1,8 @@
 {
   "/ws": {
     "target": "http://localhost:8000/ws"
+  },
+  "/api": {
+    "target": "http://localhost:8000/"
   }
 }

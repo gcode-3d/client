@@ -8,7 +8,7 @@ export default function PageContainer(props) {
     <>
       <StatusBar />
       <div className="page">
-        <Sidebar />
+        <Sidebar pageName={props.page} />
         <div className="page-content">{props.children}</div>
       </div>
     </>

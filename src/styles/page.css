@@ -1,8 +1,35 @@
 .sidebar {
-  width: 50px;
-  height: calc(100vh - 50px);
+  width: 3.25rem;
+  height: calc(100vh - 3.25rem);
   background-color: #373333;
+  display: flex;
+  padding-top: 1rem;
+  flex-direction: column;
+}
+
+.sidebar .sidebar-item {
+  cursor: pointer;
+  flex-grow: 0;
   flex-shrink: 0;
+  padding: 1rem 0;
+  justify-content: center;
+  position: relative;
+  text-decoration: none;
+  color: white;
+  display: flex;
+}
+.sidebar .sidebar-item.selected {
+  color: #b94c4ce1;
+}
+
+.sidebar .sidebar-item:hover {
+  background-color: #292929;
+}
+
+.sidebar .sidebar-end {
+  display: flex;
+  flex-direction: column-reverse;
+  height: 100%;
 }
 
 .page {

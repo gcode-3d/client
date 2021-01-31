@@ -1,31 +1,54 @@
-import React, { useEffect, useState } from "react";
-import Emitter from "../tools/emitter";
+import React, { useContext, useEffect, useState } from "react";
 import "../styles/statusbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCube, faUser } from "@fortawesome/pro-regular-svg-icons";
+import { faCube, faPlug, faUser } from "@fortawesome/pro-regular-svg-icons";
+import { faComputerSpeaker, faSlash } from "@fortawesome/pro-solid-svg-icons";
+import ConnectionContext from "./connectionContext";
+import StatusBarItem from "./statusbarItem";
+import { Link } from "react-router-dom";
 
-export default function StatusBar(_) {
-  const [username, setUserName] = new useState(null);
-  useEffect(() => {
-    return function () {
-      console.log("context:>");
-      console.log(context);
-      setUserName(context.user.username);
-    };
-  }, []);
+export default function StatusBar() {
+  const connectionContext = useContext(ConnectionContext);
   const userContent = (
-    <div className="statusbar-item">
-      <FontAwesomeIcon icon={faUser} />
-      <span>{" " + username}</span>
-    </div>
+    <StatusBarItem icon={<FontAwesomeIcon icon={faUser} />} onClick={logout}>
+      {connectionContext.user.username}
+    </StatusBarItem>
   );
-  return (
-    <div className="statusbar">
-      <div className="icon">
-        <FontAwesomeIcon icon={faCube} size={"lg"} />
-      </div>
 
-      <div className="content">{username == null ? null : userContent}</div>
-    </div>
+  return (
+    <nav className="navbar is-dark">
+      <div className="navbar-brand">
+        <Link to="/">
+          <FontAwesomeIcon icon={faCube} size={"lg"} />
+        </Link>
+      </div>
+      <div className="navbar-menu">
+        <div className="navbar-end">
+          {getStateItem(connectionContext.state)}
+          {connectionContext.user == null ? null : userContent}
+        </div>
+      </div>
+    </nav>
   );
+}
+
+function logout() {
+  console.log("test!");
+  localStorage.removeItem("auth");
+  sessionStorage.removeItem("auth");
+  window.location.reload();
+}
+function getStateItem(state) {
+  switch (state) {
+    case "Disconnected":
+      let icon = (
+        <span className="fa-layers fa-fw">
+          <FontAwesomeIcon icon={faPlug} />
+          <FontAwesomeIcon icon={faSlash} size="sm" flip={"horizontal"} />
+        </span>
+      );
+      return <StatusBarItem icon={icon}>Printer disconnected</StatusBarItem>;
+    default:
+      return false;
+  }
 }

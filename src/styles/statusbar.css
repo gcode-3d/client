@@ -1,28 +1,16 @@
-.statusbar {
+.navbar.is-dark {
   background-color: #373333;
-  color: white;
-  height: 50px;
-  display: flex;
 }
-.statusbar .icon {
-  width: 50px;
-  flex-shrink: 0;
-  height: 50px;
-  background-color: #b94c4c;
+
+.navbar-brand {
+  width: 3.25rem;
+  height: 3.25rem;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center !important;
+  background-color: #b94c4c;
 }
 
-.statusbar .content {
-  height: 50px;
-  width: 100%;
-  padding-right: 150px;
-}
-
-.statusbar .statusbar-item {
-  height: 100%;
-  display: flex;
-  width: fit-content;
-  align-items: center;
+.navbar-end {
+  margin-right: 5rem;
 }
