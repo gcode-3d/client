@@ -3,7 +3,9 @@ import Emitter from "./tools/emitter";
 import PageManager from "./components/pagemanager";
 import ConnectionError from "./pages/connectionError";
 import Setup from "./pages/setup";
+import ConnectionContext from "./components/connectionContext.jsx";
 import LoginScreen from "./pages/login";
+import StatusBarLight from "./components/statusBarLight";
 let connection;
 
 export default function App() {
@@ -43,9 +45,12 @@ export default function App() {
     }
   };
   const connect = () => {
-    let socket = new WebSocket("ws://localhost:8000/ws", [
-      `auth-${getToken()}`,
-    ]);
+    let socket;
+    if (process.env.NODE_ENV === "production") {
+      socket = new WebSocket("ws://localhost/ws", [`auth-${getToken()}`]);
+    } else {
+      socket = new WebSocket("ws://localhost:8000/ws", [`auth-${getToken()}`]);
+    }
     let connectInterval;
 
     socket.onopen = () => {
@@ -107,18 +112,52 @@ export default function App() {
         console.error("Unknown data event type: " + data.type);
     }
   }
-
   if (!isAuthenticated) {
     return <LoginScreen callback={handleLogin} />;
   }
   if (!socketDetails) {
     return <ConnectionError />;
+  } else if (socketDetails.setup === true) {
+    if (
+      socketDetails.user.permissions["admin"] == true ||
+      socketDetails.user.permissions["settings.edit"] == true
+    ) {
+      return (
+        <ConnectionContext.Provider
+          value={{
+            state: null,
+            user: {
+              username: socketDetails.user.username,
+              permissions: socketDetails.user.permissions,
+            },
+          }}
+        >
+          <Setup />
+        </ConnectionContext.Provider>
+      );
+    } else {
+      return (
+        <ConnectionContext.Provider
+          value={{
+            state: null,
+            user: {
+              username: socketDetails.user.username,
+              permissions: socketDetails.user.permissions,
+            },
+          }}
+        >
+          <StatusBarLight />
+          <h1 className="subtitle has-text-centered">
+            The server is not yet set up. Please wait until an administrator has
+            setup the server.
+          </h1>
+        </ConnectionContext.Provider>
+      );
+    }
   } else if (socketDetails.user != null) {
     return (
       <PageManager user={socketDetails.user} state={socketDetails.state} />
     );
-  } else if (socketDetails.setup === true) {
-    return <Setup />;
   } else {
     return <h1>Something went wrong, try again later.</h1>;
   }

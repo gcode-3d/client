@@ -1,14 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import "../styles/statusbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCube, faPlug, faUser } from "@fortawesome/pro-regular-svg-icons";
-import { faSlash } from "@fortawesome/pro-solid-svg-icons";
-import { faCircle } from "@fortawesome/pro-duotone-svg-icons";
+import { faCube, faUser } from "@fortawesome/pro-regular-svg-icons";
 import ConnectionContext from "./connectionContext";
 import StatusBarItem from "./statusbarItem";
-import { Link } from "react-router-dom";
 
-export default function StatusBar() {
+export default function StatusBarLight() {
   const [menuOpen, setMenuOpen] = useState(false);
   const connectionContext = useContext(ConnectionContext);
   const userContent = (
@@ -20,9 +17,7 @@ export default function StatusBar() {
   return (
     <nav className="navbar is-dark">
       <div className="navbar-brand">
-        <Link to="/">
-          <FontAwesomeIcon icon={faCube} size={"lg"} />
-        </Link>
+        <FontAwesomeIcon icon={faCube} size={"lg"} />
       </div>
       <a
         role="button"
@@ -41,7 +36,6 @@ export default function StatusBar() {
 
       <div className={"navbar-menu " + (menuOpen && "is-active")}>
         <div className="navbar-end">
-          {getStateItem(connectionContext.state)}
           {connectionContext.user == null ? null : userContent}
         </div>
       </div>
@@ -50,26 +44,7 @@ export default function StatusBar() {
 }
 
 function logout() {
-  console.log("test!");
   localStorage.removeItem("auth");
   sessionStorage.removeItem("auth");
   window.location.reload();
-}
-function getStateItem(state) {
-  let icon;
-  switch (state) {
-    case "Disconnected":
-      icon = (
-        <span className="fa-layers fa-fw">
-          <FontAwesomeIcon icon={faPlug} />
-          <FontAwesomeIcon icon={faSlash} size="sm" flip={"horizontal"} />
-        </span>
-      );
-      return <StatusBarItem icon={icon}>Printer disconnected</StatusBarItem>;
-    case "Connected":
-      icon = <FontAwesomeIcon icon={faCircle} color="#2aba2a" />;
-      return <StatusBarItem icon={icon}>Printer connected</StatusBarItem>;
-    default:
-      return false;
-  }
 }

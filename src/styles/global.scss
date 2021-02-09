@@ -1,10 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 $text: white;
+$title-color: $text;
 @import "../../node_modules/bulma/sass/utilities/_all.sass";
 @import "../../node_modules/bulma/sass/base/_all.sass";
 @import "../../node_modules/bulma/sass/elements/button.sass";
 @import "../../node_modules/bulma/sass/elements/container.sass";
 @import "../../node_modules/bulma/sass/components/navbar.sass";
+@import "../../node_modules/bulma/sass/helpers/_all.sass";
+@import "../../node_modules/bulma/sass/elements/title.sass";
+@import "../../node_modules/bulma/sass/form/_all.sass";
+@import "../../node_modules/bulma/sass/grid/columns.sass";
+@import "../../node_modules/bulma/sass/elements/table.sass";
+@import "../../node_modules/bulma/sass/elements/tag.sass";
+@import "../../node_modules/bulma/sass/components/dropdown.sass";
 
 body,
 html {
@@ -24,9 +32,21 @@ a {
   text-decoration: none;
   color: white;
 }
+a:hover {
+  color: rgb(177, 177, 177);
+}
 
 .icon-text .icon {
-  margin-right: 0.2rem;
+  margin-right: 0.3em;
+}
+
+label.label {
+  color: #ffffffd3;
+}
+
+.checkbox:hover,
+.radio:hover {
+  color: #ebebeb;
 }
 
 @media screen and (max-width: $desktop) {
