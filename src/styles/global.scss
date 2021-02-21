@@ -1,6 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 $text: white;
 $title-color: $text;
+$background: #595959;
+$scheme-main: #595959;
+$scheme-main-bis: #424242;
+$link: rgb(177, 177, 177);
+$border: #796f6f;
+
 @import "../../node_modules/bulma/sass/utilities/_all.sass";
 @import "../../node_modules/bulma/sass/base/_all.sass";
 @import "../../node_modules/bulma/sass/elements/button.sass";
@@ -32,9 +38,6 @@ a {
   text-decoration: none;
   color: white;
 }
-a:hover {
-  color: rgb(177, 177, 177);
-}
 
 .icon-text .icon {
   margin-right: 0.3em;
@@ -47,6 +50,10 @@ label.label {
 .checkbox:hover,
 .radio:hover {
   color: #ebebeb;
+}
+
+.navbar-dropdown a.navbar-item {
+  padding-right: 0;
 }
 
 @media screen and (max-width: $desktop) {

@@ -15,7 +15,8 @@ export default function PageManager(props) {
         <Route path="/" exact>
           <ConnectionContext.Provider
             value={{
-              state: props.state,
+              state: props.state.state,
+              stateDescription: props.state.description,
               user: {
                 username: props.user.username,
                 permissions: props.user.permissions,
@@ -35,7 +36,8 @@ export default function PageManager(props) {
         >
           <ConnectionContext.Provider
             value={{
-              state: props.state,
+              state: props.state.state,
+              stateDescription: props.state.description,
               user: {
                 username: props.user.username,
                 permissions: props.user.permissions,
@@ -56,7 +58,8 @@ export default function PageManager(props) {
         >
           <ConnectionContext.Provider
             value={{
-              state: props.state,
+              state: props.state.state,
+              stateDescription: props.state.description,
               user: {
                 username: props.user.username,
                 permissions: props.user.permissions,
@@ -77,7 +80,8 @@ export default function PageManager(props) {
         >
           <ConnectionContext.Provider
             value={{
-              state: props.state,
+              state: props.state.state,
+              stateDescription: props.state.description,
               user: {
                 username: props.user.username,
                 permissions: props.user.permissions,
@@ -91,7 +95,8 @@ export default function PageManager(props) {
         <Route>
           <ConnectionContext.Provider
             value={{
-              state: props.state,
+              state: props.state.state,
+              stateDescription: props.state.description,
               user: {
                 username: props.user.username,
                 permissions: props.user.permissions,

@@ -126,6 +126,7 @@ export default function App() {
         <ConnectionContext.Provider
           value={{
             state: null,
+            stateDescription: null,
             user: {
               username: socketDetails.user.username,
               permissions: socketDetails.user.permissions,
@@ -140,6 +141,7 @@ export default function App() {
         <ConnectionContext.Provider
           value={{
             state: null,
+            stateDescription: null,
             user: {
               username: socketDetails.user.username,
               permissions: socketDetails.user.permissions,
@@ -156,7 +158,13 @@ export default function App() {
     }
   } else if (socketDetails.user != null) {
     return (
-      <PageManager user={socketDetails.user} state={socketDetails.state} />
+      <PageManager
+        user={socketDetails.user}
+        state={{
+          state: socketDetails.state,
+          description: socketDetails.description,
+        }}
+      />
     );
   } else {
     return <h1>Something went wrong, try again later.</h1>;
