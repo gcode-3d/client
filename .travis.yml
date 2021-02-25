@@ -19,3 +19,4 @@ deploy:
   file: "./dist.zip"
   prerelease: true
   cleanup: false
+  skip_cleanup: true
