@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useState } from "react";
 import Emitter from "./tools/emitter";
-import PageManager from "./components/pagemanager";
+import PageManager from "./components/pageManager";
 import ConnectionError from "./pages/connectionError";
 import Setup from "./pages/setup";
 import ConnectionContext from "./components/connectionContext.jsx";
