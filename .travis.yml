@@ -16,5 +16,6 @@ before_deploy:
 deploy:
   provider: releases
   token: "$GHTOKEN"
-  file: "./build.zip"
+  file: "./dist.zip"
+  prerelease: true
   cleanup: false
