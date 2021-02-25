@@ -41,7 +41,7 @@ export default function App() {
     clearInterval(interval);
     if (ws != null) {
       ws.onclose = null;
-      delete ws;
+      ws = null;
     }
   };
   const connect = () => {

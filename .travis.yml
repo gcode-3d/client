@@ -4,6 +4,9 @@ node_js:
 dist: xenial
 script:
   - npm run build
+before_install:
+  - npm config set "@fortawesome:registry" https://npm.fontawesome.com/
+  - npm config set "//npm.fontawesome.com/:_authToken" ${FONTAWESOME_NPM_AUTH_TOKEN}
 before_deploy:
   - git config --local user.name "Tobias Feld"
   - git config --local user.email "tobias.feld@hotmail.com"

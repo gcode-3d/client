@@ -5,6 +5,7 @@ import SetupDeviceBox from "../components/setupDeviceBox";
 import StatusBarLight from "../components/statusBarLight";
 import "../styles/setup.css";
 import PrepareDeviceSetupPage from "./prepareDeviceForSetup";
+import GETURL from "../tools/geturl";
 export default function Setup() {
   const [loading, setLoading] = useState(false);
   const [devices, setDevices] = useState([]);
@@ -88,7 +89,7 @@ export default function Setup() {
         headers: headers,
       };
 
-      fetch("/api/fetchDevices", requestOptions)
+      fetch(GETURL() + "/api/fetchDevices", requestOptions)
         .then(async (response) => {
           let json = await response.json();
           if (!unmounted) {

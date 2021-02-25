@@ -2,6 +2,7 @@ import { faSpinner } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import "../styles/login.css";
+import GETURL from "../tools/geturl";
 
 module.exports = ({ callback }) => {
   const [username, setUsername] = useState("");
@@ -15,11 +16,12 @@ module.exports = ({ callback }) => {
     let unmount = false;
     (async () => {
       try {
-        var result = await fetch("/api/ping");
+        var result = await fetch(GETURL() + "/api/ping");
         if (!result.ok && !unmount) {
           setCustomError("Error: Cannot connect to server.");
         }
       } catch (e) {
+        console.log(GETURL());
         console.error(e);
         if (!unmount) {
           setCustomError("Error: Cannot connect to server.");
@@ -113,7 +115,7 @@ module.exports = ({ callback }) => {
       redirect: "follow",
     };
     setBusy(true);
-    fetch("/api/login", requestOptions)
+    fetch(GETURL() + "/api/login", requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (result.error) {

@@ -2,7 +2,7 @@ import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
 import { faInfoCircle } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
-
+import GETURL from "../tools/geturl.js";
 let baudrates = [
   "Auto",
   115200,
@@ -212,7 +212,7 @@ export default function PrepareDeviceForm({ path }) {
       body: urlencoded,
     };
 
-    fetch("/api/setup", requestOptions)
+    fetch(GETURL() + "/api/setup", requestOptions)
       .then((response) => {
         if (!response.ok) {
           setLoading(false);
