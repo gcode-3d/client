@@ -1,6 +1,7 @@
 language: node_js
 node_js:
   - node
+dist: xenial
 script:
   - npm run build
 before_deploy:
@@ -11,6 +12,6 @@ before_deploy:
   - zip -r ./build.zip ./dist/
 deploy:
   provider: releases
-  api_key: "$GHTOKEN"
+  token: "$GHTOKEN"
   file: "./build.zip"
-  skip_cleanup: true
+  cleanup: false
