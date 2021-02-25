@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - node
+script:
+  - npm run build
+before_deploy:
+  - git config --local user.name "Tobias Feld"
+  - git config --local user.email "tobias.feld@hotmail.com"
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+  - git tag $TRAVIS_TAG
+  - zip -r ./build.zip ./dist/
+deploy:
+  provider: releases
+  api_key: "$GHTOKEN"
+  file: "./build.zip"
+  skip_cleanup: true
