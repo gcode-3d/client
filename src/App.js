@@ -12,7 +12,7 @@ export default function App() {
   const [ws, setWS] = useState(null);
   const [socketDetails, setSocketDetails] = useState(false);
   const [isAuthenticated, setAuthenticatedState] = useState(false);
-
+  var timeout = 250;
   useEffect(() => {
     Emitter.on("client.tryConnect", checkAndTryReconnect);
     return handleLogin();
@@ -61,7 +61,7 @@ export default function App() {
 
       Emitter.emit("socket.open");
 
-      this.timeout = 250;
+      timeout = 250;
       clearTimeout(connectInterval);
     };
 
@@ -72,13 +72,13 @@ export default function App() {
       console.log(
         `Websocket closed. Reconnect attempt in: ${Math.min(
           10000 / 1000,
-          (this.timeout + this.timeout) / 1000
+          (timeout + timeout) / 1000
         )}`
       );
-      this.timeout += this.timeout;
+      timeout += timeout;
       connectInterval = setTimeout(
         checkAndTryReconnect,
-        Math.min(10000, this.timeout)
+        Math.min(10000, timeout)
       );
     };
 
