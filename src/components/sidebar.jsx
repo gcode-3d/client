@@ -11,7 +11,7 @@ import {
   faTerminal as faTerminalSelected,
 } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import ConnectionContext from "./connectionContext";
 import { Link } from "react-router-dom";
 
@@ -19,7 +19,7 @@ export default function StatusBar(props) {
   const connectionContext = useContext(ConnectionContext);
   const permissions = connectionContext.user.permissions;
   let allowedEntries = [];
-  console.log(Object.keys(permissions));
+
   if (
     permissions["admin"] ||
     permissions["file.access"] ||
