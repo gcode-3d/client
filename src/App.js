@@ -1,8 +1,8 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Emitter from "./tools/emitter";
 import PageManager from "./components/pageManager";
 import ConnectionError from "./pages/connectionError";
-import Setup from "./pages/setup";
+import DeviceSetup from "./pages/deviceSetup";
 import ConnectionContext from "./components/connectionContext.jsx";
 import LoginScreen from "./pages/login";
 import StatusBarLight from "./components/statusBarLight";
@@ -102,7 +102,6 @@ export default function App() {
       console.error(e);
       return;
     }
-    console.log(data);
     switch (data.type) {
       case "ready":
         Emitter.emit("server.ready", data.content);
@@ -133,7 +132,7 @@ export default function App() {
             },
           }}
         >
-          <Setup />
+          <DeviceSetup />
         </ConnectionContext.Provider>
       );
     } else {

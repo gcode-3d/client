@@ -21,7 +21,6 @@ module.exports = ({ callback }) => {
           setCustomError("Error: Cannot connect to server.");
         }
       } catch (e) {
-        console.log(GETURL());
         console.error(e);
         if (!unmount) {
           setCustomError("Error: Cannot connect to server.");
@@ -31,7 +30,7 @@ module.exports = ({ callback }) => {
     return () => {
       unmount = true;
     };
-  });
+  }, []);
 
   return (
     <div className="loginContainer">
