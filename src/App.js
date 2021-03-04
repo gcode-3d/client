@@ -41,7 +41,6 @@ export default function App() {
     clearInterval(interval);
     if (ws != null) {
       ws.onclose = null;
-      ws = null;
     }
   };
   const connect = () => {
@@ -70,10 +69,14 @@ export default function App() {
       clearTimeout(connectInterval);
     };
 
-    socket.onclose = () => {
+    socket.onclose = (e) => {
       Emitter.emit("socket.closed");
       setSocketDetails(null);
-
+      if (e.code == 4001) {
+        localStorage.removeItem("auth");
+        sessionStorage.removeItem("auth");
+        return setAuthenticatedState(false);
+      }
       console.log(
         `Websocket closed. Reconnect attempt in: ${Math.min(
           10000 / 1000,
@@ -88,7 +91,7 @@ export default function App() {
     };
 
     socket.onerror = (err) => {
-      console.error("Websocket errored: ", err.message, "Closing socket");
+      console.error("Websocket errored: ", err, "Closing socket");
       socket.close();
     };
     return connectInterval;
