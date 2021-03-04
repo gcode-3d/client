@@ -47,7 +47,12 @@ export default function App() {
   const connect = () => {
     let socket;
     if (process.env.NODE_ENV === "production") {
-      socket = new WebSocket("ws://localhost/ws", [`auth-${getToken()}`]);
+      socket = new WebSocket(
+        window.location.protocol === "https:"
+          ? "wss://" + window.location.host + "/ws"
+          : "ws://" + window.location.host + "/ws",
+        [`auth-${getToken()}`]
+      );
     } else {
       socket = new WebSocket("ws://localhost:8000/ws", [`auth-${getToken()}`]);
     }
