@@ -1,8 +1,8 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Emitter from "./tools/emitter";
 import PageManager from "./components/pageManager";
 import ConnectionError from "./pages/connectionError";
-import Setup from "./pages/setup";
+import DeviceSetup from "./pages/deviceSetup";
 import ConnectionContext from "./components/connectionContext.jsx";
 import LoginScreen from "./pages/login";
 import StatusBarLight from "./components/statusBarLight";
@@ -47,7 +47,12 @@ export default function App() {
   const connect = () => {
     let socket;
     if (process.env.NODE_ENV === "production") {
-      socket = new WebSocket("ws://localhost/ws", [`auth-${getToken()}`]);
+      socket = new WebSocket(
+        window.location.protocol === "https:"
+          ? "wss://" + window.location.host + "/ws"
+          : "ws://" + window.location.host + "/ws",
+        [`auth-${getToken()}`]
+      );
     } else {
       socket = new WebSocket("ws://localhost:8000/ws", [`auth-${getToken()}`]);
     }
@@ -102,7 +107,6 @@ export default function App() {
       console.error(e);
       return;
     }
-    console.log(data);
     switch (data.type) {
       case "ready":
         Emitter.emit("server.ready", data.content);
@@ -133,7 +137,7 @@ export default function App() {
             },
           }}
         >
-          <Setup />
+          <DeviceSetup />
         </ConnectionContext.Provider>
       );
     } else {
