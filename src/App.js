@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Emitter from "./tools/emitter";
 import PageManager from "./components/pageManager";
 import ConnectionError from "./pages/connectionError";
-import DeviceSetup from "./pages/deviceSetup";
 import ConnectionContext from "./components/connectionContext.jsx";
 import LoginScreen from "./pages/login";
 import StatusBarLight from "./components/statusBarLight";
@@ -124,45 +123,6 @@ export default function App() {
   }
   if (!socketDetails) {
     return <ConnectionError />;
-  } else if (socketDetails.setup === true) {
-    if (
-      socketDetails.user.permissions["admin"] == true ||
-      socketDetails.user.permissions["settings.edit"] == true
-    ) {
-      return (
-        <ConnectionContext.Provider
-          value={{
-            state: null,
-            stateDescription: null,
-            user: {
-              username: socketDetails.user.username,
-              permissions: socketDetails.user.permissions,
-            },
-          }}
-        >
-          <DeviceSetup />
-        </ConnectionContext.Provider>
-      );
-    } else {
-      return (
-        <ConnectionContext.Provider
-          value={{
-            state: null,
-            stateDescription: null,
-            user: {
-              username: socketDetails.user.username,
-              permissions: socketDetails.user.permissions,
-            },
-          }}
-        >
-          <StatusBarLight />
-          <h1 className="subtitle has-text-centered">
-            The server is not yet set up. Please wait until an administrator has
-            setup the server.
-          </h1>
-        </ConnectionContext.Provider>
-      );
-    }
   } else if (socketDetails.user != null) {
     return (
       <PageManager
