@@ -2,7 +2,6 @@ import { faSpinnerThird } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import BoxModal from "../components/boxModal";
-import StatusBar from "../components/statusbar";
 import Emitter from "../tools/emitter";
 
 export default function ConnectionError() {
@@ -17,6 +16,7 @@ export default function ConnectionError() {
 
   const button = (
     <button
+      className="button is-danger"
       onClick={() => {
         Emitter.emit("client.tryConnect");
         setAttempting(true);
@@ -29,7 +29,7 @@ export default function ConnectionError() {
     </button>
   );
   const loadingButton = (
-    <button>
+    <button className="button is-danger" disabled={true}>
       <FontAwesomeIcon spin={true} icon={faSpinnerThird} />
       Trying to connect
     </button>

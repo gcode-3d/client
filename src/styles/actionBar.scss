@@ -1,0 +1,12 @@
+@import "../../node_modules/bulma/sass/grid/columns.sass";
+
+.actionBar {
+  height: 3em;
+  width: 100%;
+  margin: auto;
+}
+.actionBar .column.is-hoverable:hover {
+  background-color: #424242;
+  border-radius: 0.1em;
+  cursor: pointer;
+}

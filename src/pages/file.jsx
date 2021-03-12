@@ -1,22 +1,20 @@
 import React, { useEffect, useState, useContext } from "react";
+import "../styles/filePage.css";
 import PageContainer from "../components/pageContainer";
 import GETURL from "../tools/geturl";
-import { DateTime } from "luxon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSort,
   faSortDown,
   faSortUp,
 } from "@fortawesome/pro-duotone-svg-icons";
-import {
-  faDownload,
-  faEdit,
-  faPrint,
-  faTrashAlt,
-} from "@fortawesome/pro-regular-svg-icons";
+import { faPlusCircle } from "@fortawesome/pro-regular-svg-icons";
 
 import ConnectionContext from "../components/connectionContext";
-import { faSlash } from "@fortawesome/pro-solid-svg-icons";
+import ActionBar from "../components/ActionBar";
+import BoxModal from "../components/boxModal";
+import FileUpload from "./fileUpload";
+import FileRow from "../components/fileRow";
 
 const directions = {
   NEUTRAL: 0,
@@ -30,28 +28,18 @@ export default function FilePage() {
   const [files, setFiles] = useState([]);
   const [filenameDirection, setFileDirection] = useState(directions.NEUTRAL);
   const [dateDirection, setDateDirection] = useState(directions.NEUTRAL);
-  console.log(connectionContext);
-  let actions = [<FontAwesomeIcon key="download" icon={faDownload} />];
-  if (connectionContext.state == "Connected") {
-    actions.push(<FontAwesomeIcon key="print" icon={faPrint} />);
-  } else {
-    actions.push(
-      <span key="print" className="fa-layers fa-fw">
-        <FontAwesomeIcon icon={faPrint} />
-        <FontAwesomeIcon icon={faSlash} size="sm" flip={"horizontal"} />
-      </span>
-    );
-  }
-  if (
-    connectionContext.user.permissions["admin"] ||
-    connectionContext.user.permissions["file.edit"]
-  ) {
-    actions.push(<FontAwesomeIcon key="edit" icon={faEdit} />);
-    actions.push(<FontAwesomeIcon key="delete" icon={faTrashAlt} />);
-  }
+
+  const [fileUploadModalVisible, setFileUploadModal] = useState(false);
 
   var hasCleanedUp = false;
   useEffect(() => {
+    reloadFiles();
+    return () => {
+      hasCleanedUp = true;
+    };
+  }, []);
+
+  function reloadFiles() {
     var headers = new Headers();
     headers.append(
       "Authorization",
@@ -75,14 +63,26 @@ export default function FilePage() {
       .catch((e) => {
         throw e;
       });
-
-    return () => {
-      hasCleanedUp = true;
-    };
-  }, []);
+  }
+  let uploadFile = (
+    <span onClick={() => setFileUploadModal(true)}>
+      <FontAwesomeIcon icon={faPlusCircle} /> Upload file
+    </span>
+  );
   return (
     <PageContainer page="file">
-      <table className="table is-fullwidth is-hoverable">
+      <ActionBar items={uploadFile} />
+      {fileUploadModalVisible && (
+        <BoxModal>
+          <FileUpload
+            onClose={() => {
+              setFileUploadModal(false);
+              reloadFiles();
+            }}
+          />
+        </BoxModal>
+      )}
+      <table id="filelist" className="table is-fullwidth is-hoverable">
         <thead>
           <tr>
             <th onClick={handleFileDirectionUpdate}>
@@ -141,15 +141,12 @@ export default function FilePage() {
             })
             .map((file) => {
               return (
-                <tr key={file.name}>
-                  <td title={file.name}>{file.name}</td>
-                  <td title={file.uploaded}>
-                    {DateTime.fromISO(file.uploaded).toLocaleString(
-                      DateTime.DATETIME_FULL
-                    )}
-                  </td>
-                  <td>{actions}</td>
-                </tr>
+                <FileRow
+                  reloadPage={reloadFiles}
+                  context={connectionContext}
+                  file={file}
+                  key={file.name}
+                />
               );
             })}
         </tbody>

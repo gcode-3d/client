@@ -4,7 +4,7 @@ import "../styles/modal.css";
 export default function BoxModal(props) {
   return (
     <div className="modal">
-      <div className="modal-background"></div>
+      <div className="modal-background" onClick={props.onClose}></div>
       <div className="modal-content">
         <div className="modal-box">
           <h1 className="header">{props.header}</h1>
