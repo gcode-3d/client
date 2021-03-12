@@ -11,7 +11,7 @@ import {
 import { faPlusCircle } from "@fortawesome/pro-regular-svg-icons";
 
 import ConnectionContext from "../components/connectionContext";
-import ActionBar from "../components/ActionBar";
+import ActionBar from "../components/actionBar";
 import BoxModal from "../components/boxModal";
 import FileUpload from "./fileUpload";
 import FileRow from "../components/fileRow";
