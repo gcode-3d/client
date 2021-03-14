@@ -43,7 +43,6 @@ export default function TemperatureChart(props) {
         data={temps}
         margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
       >
-        <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="time" />
         <YAxis />
         <Tooltip
