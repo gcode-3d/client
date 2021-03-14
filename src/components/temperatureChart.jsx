@@ -131,7 +131,7 @@ export default function TemperatureChart(props) {
           dot={false}
           dataKey={"Bed (current)"}
           key={"Bed (current)"}
-          stroke={"#0000ff"}
+          stroke={"#4c4cff"}
         />
       );
       lines.push(
@@ -140,11 +140,10 @@ export default function TemperatureChart(props) {
           dot={false}
           dataKey={"Bed (target)"}
           key={"Bed (target)"}
-          stroke={"#4c4cff"}
+          stroke={"#0000ff"}
         />
       );
     }
-    console.log(currentTemps);
     let copy = { tempArray: [...currentTemps.tempArray], lines };
     if (copy.tempArray.length > 30) {
       copy.tempArray.shift();
