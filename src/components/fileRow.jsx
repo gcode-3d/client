@@ -34,7 +34,6 @@ export default function FileRow({ file, context, reloadPage }) {
         <FontAwesomeIcon icon={faDownload} />
       </FileRowActionButton>,
     ];
-    console.log(context);
     if (context.state == "Connected") {
       actions.push(
         <FileRowActionButton

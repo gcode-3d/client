@@ -1,3 +1,4 @@
+import { faTimes } from "@fortawesome/pro-regular-svg-icons";
 import { faFilePlus, faFileUpload } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
@@ -24,7 +25,15 @@ export default function FileUpload(props) {
       onDragOver={dragOver}
       onDragLeave={dragLeave}
     >
-      <h1 className="title has-text-centered"> Upload a .gcode file</h1>
+      <h1 className="title has-text-centered">
+        Upload a .gcode file{" "}
+        <span
+          className={"icon pointer_cursor " + (state !== 0 ? "is-hidden" : "")}
+          onClick={props.onClose}
+        >
+          <FontAwesomeIcon icon={faTimes} />
+        </span>
+      </h1>
       <h2
         className={
           "subtitle has-text-centered" + (state !== 0 ? "" : " is-hidden")

@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import Emitter from "./tools/emitter";
 import PageManager from "./components/pageManager";
 import ConnectionError from "./pages/connectionError";
-import ConnectionContext from "./components/connectionContext.jsx";
 import LoginScreen from "./pages/login";
-import StatusBarLight from "./components/statusBarLight";
 let connection;
-
+let localSocketDetailCopyWebsocketOnly = false;
 export default function App() {
   const [ws, setWS] = useState(null);
   const [socketDetails, setSocketDetails] = useState(false);
@@ -71,6 +69,7 @@ export default function App() {
     socket.onclose = (e) => {
       Emitter.emit("socket.closed");
       setSocketDetails(null);
+      localSocketDetailCopyWebsocketOnly = null;
       if (e.code == 4001) {
         localStorage.removeItem("auth");
         sessionStorage.removeItem("auth");
@@ -112,8 +111,52 @@ export default function App() {
     switch (data.type) {
       case "ready":
         Emitter.emit("server.ready", data.content);
+
         setSocketDetails(data.content);
+        localSocketDetailCopyWebsocketOnly = data.content;
         break;
+      case "state_update":
+        Emitter.emit("server.device_update", {
+          old_state: {
+            state: localSocketDetailCopyWebsocketOnly.state,
+            description: localSocketDetailCopyWebsocketOnly.description,
+          },
+          new_state: data.content,
+        });
+
+        setSocketDetails({
+          ...localSocketDetailCopyWebsocketOnly,
+          state: data.content.state,
+          description: data.content.description,
+        });
+
+        localSocketDetailCopyWebsocketOnly = {
+          ...localSocketDetailCopyWebsocketOnly,
+          state: data.content.state,
+          description: data.content.description,
+        };
+
+        break;
+      case "temperature_change":
+        Emitter.emit("server.temperature_update", data.content);
+        setSocketDetails({
+          ...localSocketDetailCopyWebsocketOnly,
+          description: {
+            ...localSocketDetailCopyWebsocketOnly.details,
+            temp_data: data.content,
+          },
+        });
+
+        localSocketDetailCopyWebsocketOnly = {
+          ...localSocketDetailCopyWebsocketOnly,
+          description: {
+            ...localSocketDetailCopyWebsocketOnly.details,
+            temp_data: data.content,
+          },
+        };
+
+        break;
+
       default:
         console.error("Unknown data event type: " + data.type);
     }
