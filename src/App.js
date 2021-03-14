@@ -139,19 +139,30 @@ export default function App() {
         break;
       case "temperature_change":
         Emitter.emit("server.temperature_update", data.content);
+        if (!localSocketDetailCopyWebsocketOnly.description) {
+          localSocketDetailCopyWebsocketOnly.description = {
+            tempData: [],
+          };
+        }
+
+        let copy = [...localSocketDetailCopyWebsocketOnly.description.tempData];
+        copy.push(data.content);
+        if (copy.length > 50) {
+          copy.shift();
+        }
         setSocketDetails({
           ...localSocketDetailCopyWebsocketOnly,
           description: {
-            ...localSocketDetailCopyWebsocketOnly.details,
-            temp_data: data.content,
+            ...localSocketDetailCopyWebsocketOnly.description,
+            tempData: copy,
           },
         });
 
         localSocketDetailCopyWebsocketOnly = {
           ...localSocketDetailCopyWebsocketOnly,
           description: {
-            ...localSocketDetailCopyWebsocketOnly.details,
-            temp_data: data.content,
+            ...localSocketDetailCopyWebsocketOnly.description,
+            tempData: copy,
           },
         };
 

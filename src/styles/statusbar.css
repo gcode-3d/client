@@ -14,3 +14,8 @@
 .navbar-end {
   margin-right: 5rem;
 }
+
+.navbar-end .navbar-dropdown span.temperature {
+  margin-left: auto;
+  margin-right: 0;
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import emitter from "../tools/emitter";
 import {
   ResponsiveContainer,
@@ -11,56 +11,64 @@ import {
   Line,
 } from "recharts";
 import { DateTime } from "luxon";
+import ConnectionContext from "./connectionContext";
 export default function TemperatureChart(props) {
-  const [temps, setTemps] = useState({ tempArray: [] });
-  useEffect(() => {
-    let handler = (data) => {
-      handleTempUpdate(temps, data);
-    };
-    emitter.on("server.temperature_update", handler);
-    return () => {
-      emitter.removeListener("server.temperature_update", handler);
-    };
-  }, [temps]);
+  const connectionContext = useContext(ConnectionContext);
 
-  if (temps.tempArray.length == 0) {
+  if (
+    connectionContext.stateDescription == null ||
+    connectionContext.stateDescription.tempData == null ||
+    connectionContext.stateDescription.tempData.length == 0
+  ) {
     return (
       <div>
         <h1 className="title">Loading temperature graph</h1>
+        <h1 className="subtitle">
+          Waiting on some datapoints, check if your printer auto-reports
+          temperature
+        </h1>
       </div>
     );
   }
+
+  let temps = transFormTemperatureData(
+    connectionContext.stateDescription.tempData
+  );
+
+  let lines = getLines(connectionContext.stateDescription.tempData[0]);
+
   return (
     <ResponsiveContainer height="100%" width="100%">
       <LineChart
-        data={temps.tempArray}
-        margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+        data={temps}
+        margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="time" />
         <YAxis />
-        <Tooltip />
+        <Tooltip
+          contentStyle={{ backgroundColor: "#373737", border: "none" }}
+        />
         <Legend />
-        {temps.lines}
+        {lines}
       </LineChart>
     </ResponsiveContainer>
   );
 
-  function handleTempUpdate(currentTemps, data) {
-    let currentData = {
-      time: DateTime.now().toLocaleString(DateTime.TIME_24_WITH_SECONDS),
-    };
+  function getLines(data) {
     let lines = [];
+    if (!data) {
+      return lines;
+    }
+
     if (data.tools.length == 1) {
-      currentData["Extruder (current)"] = data.tools[0].currentTemp;
-      currentData["Extruder (target)"] = data.tools[0].targetTemp;
       lines.push(
         <Line
           type="monotone"
           dot={false}
           dataKey={"Extruder (current)"}
           key="Extruder (current)"
-          stroke={"#ff6666"}
+          stroke={"#ff0000"}
         />
       );
       lines.push(
@@ -69,22 +77,18 @@ export default function TemperatureChart(props) {
           dot={false}
           dataKey={"Extruder (target)"}
           key="Extruder (target)"
-          stroke={"#ff0000"}
+          stroke={"#ff6666"}
         />
       );
     } else {
       for (var i = 0; i < data.tools.length; i++) {
-        currentData["Extruder [" + (i + 1) + "] (current)"] =
-          data.tools[i].currentTemp;
-        currentData["Extruder [" + (i + 1) + "] (target)"] =
-          data.tools[i].targetTemp;
         lines.push(
           <Line
             type="monotone"
             dot={false}
             dataKey={"Extruder [" + (i + 1) + "] (current)"}
             key={"Extruder [" + (i + 1) + "] (current)"}
-            stroke={"#ff6666"}
+            stroke={"#ff0000"}
           />
         );
         lines.push(
@@ -93,22 +97,19 @@ export default function TemperatureChart(props) {
             dot={false}
             dataKey={"Extruder [" + (i + 1) + "] (target)"}
             key={"Extruder [" + (i + 1) + "] (target)"}
-            stroke={"#ff0000"}
+            stroke={"#ff6666"}
           />
         );
       }
     }
     if (data.chamber != null) {
-      currentData["Chamber (current)"] = data.chamber.currentTemp;
-      currentData["Chamber (target)"] = data.chamber.targetTemp;
-
       lines.push(
         <Line
           type="monotone"
           dot={false}
           dataKey={"Chamber (target)"}
           key={"Chamber (target)"}
-          stroke={"#008000"}
+          stroke={"#4ca64c"}
         />
       );
       lines.push(
@@ -117,21 +118,18 @@ export default function TemperatureChart(props) {
           dot={false}
           dataKey={"Chamber (current)"}
           key={"Chamber (current)"}
-          stroke={"#4ca64c"}
+          stroke={"#008000"}
         />
       );
     }
     if (data.bed != null) {
-      currentData["Bed (current)"] = data.bed.currentTemp;
-      currentData["Bed (target)"] = data.bed.targetTemp;
-
       lines.push(
         <Line
           type="monotone"
           dot={false}
           dataKey={"Bed (current)"}
           key={"Bed (current)"}
-          stroke={"#4c4cff"}
+          stroke={"#0000ff"}
         />
       );
       lines.push(
@@ -140,19 +138,54 @@ export default function TemperatureChart(props) {
           dot={false}
           dataKey={"Bed (target)"}
           key={"Bed (target)"}
-          stroke={"#0000ff"}
+          stroke={"#4c4cff"}
         />
       );
     }
-    let copy = { tempArray: [...currentTemps.tempArray], lines };
-    if (copy.tempArray.length > 30) {
-      copy.tempArray.shift();
-    } else {
-      for (var i = 0; i < 30; i++) {
-        copy.tempArray.push(currentData);
-      }
+    return lines;
+  }
+
+  function transFormTemperatureData(temperatureArray) {
+    if (temperatureArray.length == 0) {
+      return temperatureArray;
     }
-    copy.tempArray.push(currentData);
-    setTemps(copy);
+
+    let data = temperatureArray[0];
+
+    return temperatureArray.map((temperatureData) => {
+      let temperatureObject = {
+        time: DateTime.fromMillis(temperatureData.time).toLocaleString(
+          DateTime.TIME_24_WITH_SECONDS
+        ),
+      };
+
+      if (temperatureData.tools.length == 1) {
+        temperatureObject["Extruder (current)"] =
+          temperatureData.tools[0].currentTemp;
+        temperatureObject["Extruder (target)"] =
+          temperatureData.tools[0].targetTemp;
+      } else {
+        for (var i = 0; i < data.tools.length; i++) {
+          temperatureObject["Extruder [" + (i + 1) + "] (current)"] =
+            temperatureData.tools[i].currentTemp;
+          temperatureObject["Extruder [" + (i + 1) + "] (target)"] =
+            temperatureData.tools[i].targetTemp;
+        }
+      }
+
+      if (temperatureData.chamber !== null) {
+        temperatureObject["Chamber (current)"] =
+          temperatureData.chamber.currentTemp;
+        temperatureObject["Chamber (target)"] =
+          temperatureData.chamber.targetTemp;
+      }
+
+      if (temperatureData.bed !== null) {
+        temperatureObject["Bed (current)"] = temperatureData.bed.currentTemp;
+        temperatureObject["Bed (target)"] = temperatureData.bed.targetTemp;
+      }
+
+      return temperatureObject;
+    });
   }
 }

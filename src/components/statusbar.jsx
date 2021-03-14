@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import "../styles/statusbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faArrowRight,
   faBug,
   faCube,
   faExclamationCircle,
@@ -84,8 +85,107 @@ function getStateItem(state, description) {
       );
     case "Connected":
       icon = <FontAwesomeIcon icon={faCircle} color="#2aba2a" />;
+      if (
+        !description ||
+        !description.tempData ||
+        description.tempData.length == 0
+      ) {
+        return (
+          <StatusBarItem icon={icon} title="Printer connected"></StatusBarItem>
+        );
+      }
+      let tempComponents = [];
+      let temp = description.tempData[description.tempData.length - 1];
+      if (temp.tools.length == 1) {
+        if (temp.tools[0].targetTemp != 0) {
+          tempComponents.push(
+            <div key="extruder0" className="navbar-item">
+              <b>Extruder:</b>
+              <span className="temperature">
+                {temp.tools[0].currentTemp}°C{" "}
+                <FontAwesomeIcon icon={faArrowRight} />{" "}
+                {temp.tools[0].targetTemp}
+                °C
+              </span>
+            </div>
+          );
+        } else {
+          tempComponents.push(
+            <div key="extruder0" className="navbar-item">
+              <b>Extruder:</b>
+              <span className="temperature">{temp.tools[0].currentTemp}°C</span>
+            </div>
+          );
+        }
+      } else {
+        for (var i = 0; i < temp.tools.length; i++) {
+          if (temp.tools[i].targetTemp != 0) {
+            tempComponents.push(
+              <div key={"extruder" + i} className="navbar-item">
+                <b>Extruder {i + 1}: </b>
+                <span className="temperature">
+                  {temp.tools[i].currentTemp}°C
+                  <FontAwesomeIcon icon={faArrowRight} />
+                  {temp.tools[i].targetTemp}°C
+                </span>
+              </div>
+            );
+          } else {
+            tempComponents.push(
+              <div key={"extruder" + i} className="navbar-item">
+                <span className="temperature">
+                  <b>Extruder {i + 1}: </b>
+                  {temp.tools[i].currentTemp}°C
+                </span>
+              </div>
+            );
+          }
+        }
+      }
+
+      if (temp.bed != null) {
+        if (temp.bed.targetTemp != 0) {
+          tempComponents.push(
+            <div key="bed" className="navbar-item">
+              <b>Bed:</b> {temp.bed.currentTemp}°C
+              <FontAwesomeIcon icon={faArrowRight} />
+              {temp.bed.targetTemp}°C
+            </div>
+          );
+        } else {
+          tempComponents.push(
+            <div key="bed" className="navbar-item">
+              <b>Bed:</b>
+              <span className="temperature">{temp.bed.currentTemp}°C</span>
+            </div>
+          );
+        }
+      }
+      if (temp.chamber != null) {
+        if (temp.chamber.targetTemp != 0) {
+          tempComponents.push(
+            <div key="chamber" className="navbar-item">
+              <b>Chamber:</b> {temp.chamber.currentTemp}°C
+              <FontAwesomeIcon icon={faArrowRight} />
+              {temp.chamber.targetTemp}°C
+            </div>
+          );
+        } else {
+          tempComponents.push(
+            <div key="chamber" className="navbar-item">
+              <b>Chamber:</b>
+              <span className="temperature">{temp.chamber.currentTemp}°C</span>
+            </div>
+          );
+        }
+      }
       return (
-        <StatusBarItem icon={icon} title="Printer connected"></StatusBarItem>
+        <StatusBarItem icon={icon} title="Printer Connected">
+          <div className="navbar-item">
+            <h1 className="is-size-5">Temperatures:</h1>
+          </div>
+          {tempComponents}
+        </StatusBarItem>
       );
     case "Errored":
       icon = <FontAwesomeIcon icon={faExclamationCircle} color="red" />;
