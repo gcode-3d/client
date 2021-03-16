@@ -8,7 +8,7 @@ import {
   faSortDown,
   faSortUp,
 } from "@fortawesome/pro-duotone-svg-icons";
-import { faPlusCircle } from "@fortawesome/pro-regular-svg-icons";
+import { faPlusCircle, faSync } from "@fortawesome/pro-regular-svg-icons";
 
 import ConnectionContext from "../components/connectionContext";
 import ActionBar from "../components/actionBar";
@@ -24,13 +24,12 @@ const directions = {
 
 export default function FilePage() {
   const connectionContext = useContext(ConnectionContext);
-
+  const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const [filenameDirection, setFileDirection] = useState(directions.NEUTRAL);
   const [dateDirection, setDateDirection] = useState(directions.NEUTRAL);
 
   const [fileUploadModalVisible, setFileUploadModal] = useState(false);
-
   var hasCleanedUp = false;
   useEffect(() => {
     reloadFiles();
@@ -40,6 +39,10 @@ export default function FilePage() {
   }, []);
 
   function reloadFiles() {
+    if (loading) {
+      return;
+    }
+    setLoading(true);
     var headers = new Headers();
     headers.append(
       "Authorization",
@@ -59,8 +62,13 @@ export default function FilePage() {
           return;
         }
         setFiles(files);
+        setTimeout(() => {
+          setLoading(false);
+          // Give the ilusion the button does anything, because usually this list is loaded quickly with no / just a few files
+        }, 1000);
       })
       .catch((e) => {
+        setLoading(false);
         throw e;
       });
   }
@@ -69,9 +77,14 @@ export default function FilePage() {
       <FontAwesomeIcon icon={faPlusCircle} /> Upload file
     </span>
   );
+  let refreshPage = (
+    <span onClick={() => reloadFiles()}>
+      <FontAwesomeIcon icon={faSync} spin={loading} /> Reload files
+    </span>
+  );
   return (
     <PageContainer page="file">
-      <ActionBar items={uploadFile} />
+      <ActionBar items={[uploadFile, refreshPage]} />
       {fileUploadModalVisible && (
         <BoxModal>
           <FileUpload
