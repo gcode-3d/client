@@ -5,6 +5,7 @@ import ConnectionError from "./pages/connectionError";
 import LoginScreen from "./pages/login";
 let connection;
 let localSocketDetailCopyWebsocketOnly = false;
+let socket;
 export default function App() {
   const [ws, setWS] = useState(null);
   const [socketDetails, setSocketDetails] = useState(false);
@@ -12,6 +13,7 @@ export default function App() {
   var timeout = 250;
   useEffect(() => {
     Emitter.on("client.tryConnect", checkAndTryReconnect);
+    Emitter.on("client.state.update", changeConnectionState);
     return handleLogin();
   }, []);
 
@@ -41,7 +43,6 @@ export default function App() {
     }
   };
   const connect = () => {
-    let socket;
     if (process.env.NODE_ENV === "production") {
       socket = new WebSocket(
         window.location.protocol === "https:"
@@ -189,5 +190,15 @@ export default function App() {
     );
   } else {
     return <h1>Something went wrong, try again later.</h1>;
+  }
+  function changeConnectionState(state) {
+    socket.send(
+      JSON.stringify({
+        action: "connection_update",
+        data: {
+          new_state: state,
+        },
+      })
+    );
   }
 }

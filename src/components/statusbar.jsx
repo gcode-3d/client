@@ -14,6 +14,7 @@ import { faCircle } from "@fortawesome/pro-duotone-svg-icons";
 import ConnectionContext from "./connectionContext";
 import StatusBarItem from "./statusbarItem";
 import { Link } from "react-router-dom";
+import ConnectionStatusActionButtons from "./connectionStatusActionButtons";
 
 export default function StatusBar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -55,7 +56,8 @@ export default function StatusBar() {
         <div className="navbar-end">
           {getStateItem(
             connectionContext.state,
-            connectionContext.stateDescription
+            connectionContext.stateDescription,
+            connectionContext.user
           )}
           {connectionContext.user == null ? null : userContent}
         </div>
@@ -70,7 +72,7 @@ function logout() {
   sessionStorage.removeItem("auth");
   window.location.reload();
 }
-function getStateItem(state, description) {
+function getStateItem(state, description, user) {
   let icon;
   switch (state) {
     case "Disconnected":
@@ -81,7 +83,10 @@ function getStateItem(state, description) {
         </span>
       );
       return (
-        <StatusBarItem icon={icon} title="Printer disconnected"></StatusBarItem>
+        <StatusBarItem icon={icon} title="Printer disconnected">
+          <div className="navbar-item">Your printer is disconnected</div>
+          <ConnectionStatusActionButtons state={state} user={user} />
+        </StatusBarItem>
       );
     case "Connected":
       icon = <FontAwesomeIcon icon={faCircle} color="#2aba2a" />;
@@ -91,7 +96,9 @@ function getStateItem(state, description) {
         description.tempData.length == 0
       ) {
         return (
-          <StatusBarItem icon={icon} title="Printer connected"></StatusBarItem>
+          <StatusBarItem icon={icon} title="Printer connected">
+            <ConnectionStatusActionButtons state={state} user={user} />
+          </StatusBarItem>
         );
       }
       let tempComponents = [];
@@ -179,12 +186,14 @@ function getStateItem(state, description) {
           );
         }
       }
+
       return (
-        <StatusBarItem icon={icon} title="Printer Connected">
+        <StatusBarItem icon={icon} title="Printer connected">
           <div className="navbar-item">
             <h1 className="is-size-5">Temperatures:</h1>
           </div>
           {tempComponents}
+          <ConnectionStatusActionButtons state={state} user={user} />
         </StatusBarItem>
       );
     case "Errored":
@@ -192,7 +201,8 @@ function getStateItem(state, description) {
       return (
         <StatusBarItem icon={icon} title="Failed to connect">
           <div className="navbar-item">Error Message:</div>
-          <div className="navbar-item">{description}</div>
+          <div className="navbar-item">{description.errorDescription}</div>
+          <ConnectionStatusActionButtons state={state} user={user} />
         </StatusBarItem>
       );
     default:
@@ -200,7 +210,11 @@ function getStateItem(state, description) {
       return (
         <StatusBarItem icon={icon} title={`Unknown state (${state})`}>
           <div className="navbar-item">Additional info:</div>
-          <div className="navbar-item">{description}</div>
+          <div className="navbar-item">
+            {typeof description == "string"
+              ? description
+              : JSON.stringify(description)}
+          </div>
         </StatusBarItem>
       );
   }
