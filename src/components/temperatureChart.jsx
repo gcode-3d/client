@@ -15,6 +15,17 @@ import ConnectionContext from "./connectionContext";
 export default function TemperatureChart(props) {
   const connectionContext = useContext(ConnectionContext);
 
+  if (connectionContext.state !== "Connected") {
+    return (
+      <div>
+        <h1 className="title">Connect your printer</h1>
+        <h1 className="subtitle">
+          Your printer needs to be connected to use the temperature chart
+        </h1>
+      </div>
+    );
+  }
+
   if (
     connectionContext.stateDescription == null ||
     connectionContext.stateDescription.tempData == null ||
