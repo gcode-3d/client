@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import GETURL from "../tools/geturl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,8 +10,15 @@ import {
   faTrashAlt,
 } from "@fortawesome/pro-regular-svg-icons";
 import FileRowActionButton from "./fileRowActionButton";
+import emitter from "../tools/emitter";
 
-export default function FileRow({ file, context, reloadPage }) {
+export default function FileRow({
+  file,
+  context,
+  reloadPage,
+  setSelectedPrint,
+  ...props
+}) {
   return (
     <tr>
       <td title={file.name}>{file.name}</td>
@@ -34,32 +41,47 @@ export default function FileRow({ file, context, reloadPage }) {
         <FontAwesomeIcon icon={faDownload} />
       </FileRowActionButton>,
     ];
-    if (context.state == "Connected") {
-      actions.push(
-        <FileRowActionButton
-          title={"Start a print with " + file.name}
-          key="print"
-          color="success"
-        >
-          <FontAwesomeIcon icon={faPrint} />
-        </FileRowActionButton>
-      );
-    } else {
-      actions.push(
-        <FileRowActionButton
-          key="print"
-          title={
-            "Your printer is not ready to print, make sure the printer is connected & not currently printing."
-          }
-          color="danger"
-          disabled={true}
-        >
-          <span key="print" className="fa-layers fa-fw">
+    if (
+      context.user.permissions["admin"] ||
+      context.user.permissions["print_state.edit"]
+    ) {
+      if (context.state == "Connected") {
+        actions.push(
+          <FileRowActionButton
+            title={
+              !props.loading
+                ? "Start a print using " + file.name
+                : "Starting print using " + file.name
+            }
+            key="print"
+            color="success"
+            disabled={props.print_disabled}
+            loading={props.print_loading}
+            onClick={() => {
+              setSelectedPrint();
+              emitter.emit("client.print.create", file.name);
+            }}
+          >
             <FontAwesomeIcon icon={faPrint} />
-            <FontAwesomeIcon icon={faSlash} size="sm" flip={"horizontal"} />
-          </span>
-        </FileRowActionButton>
-      );
+          </FileRowActionButton>
+        );
+      } else {
+        actions.push(
+          <FileRowActionButton
+            key="print"
+            title={
+              "Your printer is not ready to print, make sure the printer is connected & not currently printing."
+            }
+            color="danger"
+            disabled={true}
+          >
+            <span key="print" className="fa-layers fa-fw">
+              <FontAwesomeIcon icon={faPrint} />
+              <FontAwesomeIcon icon={faSlash} size="sm" flip={"horizontal"} />
+            </span>
+          </FileRowActionButton>
+        );
+      }
     }
     if (
       context.user.permissions["admin"] ||

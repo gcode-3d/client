@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import emitter from "../tools/emitter";
 import {
   ResponsiveContainer,
   LineChart,
@@ -14,8 +13,7 @@ import { DateTime } from "luxon";
 import ConnectionContext from "./connectionContext";
 export default function TemperatureChart(props) {
   const connectionContext = useContext(ConnectionContext);
-
-  if (connectionContext.state !== "Connected") {
+  if (!["Connected", "Printing"].includes(connectionContext.state)) {
     return (
       <div>
         <h1 className="title">Connect your printer</h1>

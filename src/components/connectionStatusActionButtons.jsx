@@ -1,4 +1,9 @@
-import { faLink, faPowerOff, faSync } from "@fortawesome/pro-regular-svg-icons";
+import {
+  faLink,
+  faPowerOff,
+  faStopCircle,
+  faSync,
+} from "@fortawesome/pro-regular-svg-icons";
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import emitter from "../tools/emitter";
@@ -45,6 +50,62 @@ export default function ConnectionStatusActionButtons(props) {
               <FontAwesomeIcon icon={faSync} />
             </button>
           </div>
+        </div>
+      );
+    case "Printing":
+      if (permissions.admin != true) {
+        return null;
+      }
+      let buttons = [];
+      if (permissions.admin == true || permissions["connection.edit"]) {
+        buttons.push(
+          <button
+            title="Disconnect device"
+            className="button is-small is-danger"
+            disabled={loading}
+            key="Disconnect"
+            onClick={() => {
+              setLoading(true);
+              emitter.emit("client.state.update", "disconnect");
+            }}
+          >
+            <FontAwesomeIcon icon={faPowerOff} />
+          </button>
+        );
+        buttons.push(
+          <button
+            key="Reconnect"
+            title="Reconnect Device"
+            disabled={loading}
+            className="button is-small is-warning"
+            onClick={() => {
+              setLoading(true);
+              emitter.emit("client.state.update", "reconnect");
+            }}
+          >
+            <FontAwesomeIcon icon={faSync} />
+          </button>
+        );
+      }
+      if (permissions.admin == true || permissions["print_state.edit"]) {
+        buttons.push(
+          <button
+            title="Cancel print"
+            className="button is-small is-danger"
+            disabled={loading}
+            key="CancelPrint"
+            onClick={() => {
+              setLoading(true);
+              emitter.emit("client.state.update", "print_cancel");
+            }}
+          >
+            <FontAwesomeIcon icon={faStopCircle} />
+          </button>
+        );
+      }
+      return (
+        <div className="connectionStatusActionButton">
+          <div className="buttons is-centered">{buttons}</div>
         </div>
       );
     case "Disconnected":

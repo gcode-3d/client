@@ -25,6 +25,7 @@ const directions = {
 export default function FilePage() {
   const connectionContext = useContext(ConnectionContext);
   const [loading, setLoading] = useState(false);
+  const [selectedPrint, setSelectedPrint] = useState(null);
   const [files, setFiles] = useState([]);
   const [filenameDirection, setFileDirection] = useState(directions.NEUTRAL);
   const [dateDirection, setDateDirection] = useState(directions.NEUTRAL);
@@ -37,6 +38,10 @@ export default function FilePage() {
       hasCleanedUp = true;
     };
   }, []);
+
+  useEffect(() => {
+    setSelectedPrint(null);
+  }, [connectionContext.state]);
 
   function reloadFiles() {
     if (loading) {
@@ -158,6 +163,13 @@ export default function FilePage() {
                   reloadPage={reloadFiles}
                   context={connectionContext}
                   file={file}
+                  print_disabled={selectedPrint != null}
+                  print_loading={
+                    selectedPrint != null && file.name === selectedPrint
+                  }
+                  setSelectedPrint={() => {
+                    setSelectedPrint(file.name);
+                  }}
                   key={file.name}
                 />
               );

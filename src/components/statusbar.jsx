@@ -89,6 +89,7 @@ function getStateItem(state, description, user) {
         </StatusBarItem>
       );
     case "Connected":
+    case "Printing":
       icon = <FontAwesomeIcon icon={faCircle} color="#2aba2a" />;
       if (
         !description ||
@@ -96,7 +97,10 @@ function getStateItem(state, description, user) {
         description.tempData.length == 0
       ) {
         return (
-          <StatusBarItem icon={icon} title="Printer connected">
+          <StatusBarItem
+            icon={icon}
+            title={state == "Printing" ? "Printing" : "Printer connected"}
+          >
             <ConnectionStatusActionButtons state={state} user={user} />
           </StatusBarItem>
         );
@@ -154,9 +158,12 @@ function getStateItem(state, description, user) {
         if (temp.bed.targetTemp != 0) {
           tempComponents.push(
             <div key="bed" className="navbar-item">
-              <b>Bed:</b> {temp.bed.currentTemp}°C
-              <FontAwesomeIcon icon={faArrowRight} />
-              {temp.bed.targetTemp}°C
+              <b>Bed:</b>
+              <span className="temperature">
+                {temp.bed.currentTemp}°C
+                <FontAwesomeIcon icon={faArrowRight} />
+                {temp.bed.targetTemp}°C
+              </span>
             </div>
           );
         } else {
@@ -172,9 +179,12 @@ function getStateItem(state, description, user) {
         if (temp.chamber.targetTemp != 0) {
           tempComponents.push(
             <div key="chamber" className="navbar-item">
-              <b>Chamber:</b> {temp.chamber.currentTemp}°C
-              <FontAwesomeIcon icon={faArrowRight} />
-              {temp.chamber.targetTemp}°C
+              <b>Chamber:</b>
+              <span className="temperature">
+                {temp.chamber.currentTemp}°C
+                <FontAwesomeIcon icon={faArrowRight} />
+                {temp.chamber.targetTemp}°C
+              </span>
             </div>
           );
         } else {

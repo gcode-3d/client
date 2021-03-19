@@ -14,6 +14,7 @@ export default function App() {
   useEffect(() => {
     Emitter.on("client.tryConnect", checkAndTryReconnect);
     Emitter.on("client.state.update", changeConnectionState);
+    Emitter.on("client.print.create", setPrintJob);
     return handleLogin();
   }, []);
 
@@ -145,7 +146,9 @@ export default function App() {
             tempData: [],
           };
         }
-
+        if (!localSocketDetailCopyWebsocketOnly.description.tempData) {
+          localSocketDetailCopyWebsocketOnly.description.tempData = [];
+        }
         let copy = [...localSocketDetailCopyWebsocketOnly.description.tempData];
         copy.push(data.content);
         if (copy.length > 50) {
@@ -191,12 +194,23 @@ export default function App() {
   } else {
     return <h1>Something went wrong, try again later.</h1>;
   }
+
   function changeConnectionState(state) {
     socket.send(
       JSON.stringify({
         action: "connection_update",
         data: {
           new_state: state,
+        },
+      })
+    );
+  }
+  function setPrintJob(filename) {
+    socket.send(
+      JSON.stringify({
+        action: "print_create",
+        data: {
+          name: filename,
         },
       })
     );
