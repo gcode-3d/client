@@ -96,7 +96,7 @@ export default function ConnectionStatusActionButtons(props) {
             key="CancelPrint"
             onClick={() => {
               setLoading(true);
-              emitter.emit("client.state.update", "print_cancel");
+              emitter.emit("client.print.cancel", "print_cancel");
             }}
           >
             <FontAwesomeIcon icon={faStopCircle} />

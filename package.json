@@ -18,6 +18,7 @@
     "react": "^17.0.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
+    "react-terminal-ui": "^0.1.10",
     "recharts": "^2.0.8"
   },
   "devDependencies": {

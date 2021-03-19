@@ -3,9 +3,10 @@ import React from "react";
 const ConnectionContext = React.createContext({
   state: "Unknown",
   stateDescription: null,
+  terminalData: [],
   user: {
     username: "Unknown",
-    permissions: new Map(),
+    permissions: {},
   },
 });
 export default ConnectionContext;

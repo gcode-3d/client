@@ -121,8 +121,23 @@ export default function FileUpload(props) {
     </div>
   );
 
+  let fileUploadIssue = (
+    <div className="fileUpload">
+      <h1 className="title">Couldn't upload this file</h1>
+      <h1 className="subtitle">
+        Something went wrong while uploading this file, check if it is a valid
+        .gcode file or try again later.
+      </h1>
+      <button className="button is-danger" onClick={props.onClose}>
+        Close
+      </button>
+    </div>
+  );
+
   if (state == 0 || state == 2 || state == 3) {
     return fileUpload;
+  } else if (state == 4) {
+    return fileUploadIssue;
   } else if (state == 1) {
     return fileUploadSuccess;
   } else {
@@ -159,6 +174,9 @@ export default function FileUpload(props) {
     }
     if (file.size > 20 * 1024 * 1024) {
       return setState(3);
+    }
+    if (!file.name.trim().endsWith(".gcode")) {
+      return setState(4);
     }
     setUploading(true);
     let headers = new Headers();

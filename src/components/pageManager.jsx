@@ -17,6 +17,7 @@ export default function PageManager(props) {
             value={{
               state: props.state.state,
               stateDescription: props.state.description,
+              terminalData: props.terminalData || [],
               user: {
                 username: props.user.username,
                 permissions: props.user.permissions,
@@ -38,6 +39,7 @@ export default function PageManager(props) {
             value={{
               state: props.state.state,
               stateDescription: props.state.description,
+              terminalData: props.terminalData || [],
               user: {
                 username: props.user.username,
                 permissions: props.user.permissions,
@@ -60,6 +62,7 @@ export default function PageManager(props) {
             value={{
               state: props.state.state,
               stateDescription: props.state.description,
+              terminalData: props.terminalData || [],
               user: {
                 username: props.user.username,
                 permissions: props.user.permissions,
@@ -82,6 +85,7 @@ export default function PageManager(props) {
             value={{
               state: props.state.state,
               stateDescription: props.state.description,
+              terminalData: props.terminalData || [],
               user: {
                 username: props.user.username,
                 permissions: props.user.permissions,
@@ -97,6 +101,7 @@ export default function PageManager(props) {
             value={{
               state: props.state.state,
               stateDescription: props.state.description,
+              terminalData: props.terminalData || [],
               user: {
                 username: props.user.username,
                 permissions: props.user.permissions,

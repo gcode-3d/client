@@ -5,16 +5,20 @@ import ConnectionError from "./pages/connectionError";
 import LoginScreen from "./pages/login";
 let connection;
 let localSocketDetailCopyWebsocketOnly = false;
+let terminalDataCopy = [];
 let socket;
 export default function App() {
   const [ws, setWS] = useState(null);
   const [socketDetails, setSocketDetails] = useState(false);
+  const [terminalData, setTerminalData] = useState([]);
   const [isAuthenticated, setAuthenticatedState] = useState(false);
   var timeout = 250;
   useEffect(() => {
     Emitter.on("client.tryConnect", checkAndTryReconnect);
     Emitter.on("client.state.update", changeConnectionState);
     Emitter.on("client.print.create", setPrintJob);
+    Emitter.on("client.print.cancel", cancelPrintJob);
+    Emitter.on("client.terminal.send", sendTerminalCommand);
     return handleLogin();
   }, []);
 
@@ -72,6 +76,7 @@ export default function App() {
       Emitter.emit("socket.closed");
       setSocketDetails(null);
       localSocketDetailCopyWebsocketOnly = null;
+      terminalDataCopy = [];
       if (e.code == 4001) {
         localStorage.removeItem("auth");
         sessionStorage.removeItem("auth");
@@ -171,7 +176,37 @@ export default function App() {
         };
 
         break;
+      case "message_receive":
+        if (terminalDataCopy.length > 0) {
+          let lastMessage = terminalDataCopy[terminalDataCopy.length - 1];
+          if (lastMessage.data === data.content.message) {
+            let temp = [...terminalDataCopy];
+            temp[terminalDataCopy.length - 1].amount++;
+            setTerminalData(temp);
 
+            terminalDataCopy = temp;
+            return;
+          }
+        }
+        setTerminalData([
+          ...terminalDataCopy.slice(Math.max(terminalDataCopy.length - 300, 0)),
+          {
+            type: data.content.type,
+            data: data.content.message,
+            amount: 1,
+          },
+        ]);
+
+        terminalDataCopy = [
+          ...terminalDataCopy.slice(Math.max(terminalDataCopy.length - 300, 0)),
+          {
+            type: data.content.type,
+            data: data.content.message,
+            amount: 1,
+          },
+        ];
+
+        break;
       default:
         console.error("Unknown data event type: " + data.type);
     }
@@ -185,6 +220,7 @@ export default function App() {
     return (
       <PageManager
         user={socketDetails.user}
+        terminalData={terminalData}
         state={{
           state: socketDetails.state,
           description: socketDetails.description,
@@ -211,6 +247,24 @@ export default function App() {
         action: "print_create",
         data: {
           name: filename,
+        },
+      })
+    );
+  }
+  function cancelPrintJob(filename) {
+    socket.send(
+      JSON.stringify({
+        action: "print_cancel",
+        data: {},
+      })
+    );
+  }
+  function sendTerminalCommand(command) {
+    socket.send(
+      JSON.stringify({
+        action: "terminal_send",
+        data: {
+          command,
         },
       })
     );
