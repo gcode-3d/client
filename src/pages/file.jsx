@@ -68,6 +68,9 @@ export default function FilePage() {
         }
         setFiles(files);
         setTimeout(() => {
+          if (hasCleanedUp) {
+            return;
+          }
           setLoading(false);
           // Give the ilusion the button does anything, because usually this list is loaded quickly with no / just a few files
         }, 1000);

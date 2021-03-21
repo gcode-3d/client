@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Emitter from "./tools/emitter";
 import PageManager from "./components/pageManager";
 import ConnectionError from "./pages/connectionError";
 import LoginScreen from "./pages/login";
-let connection;
+import ErrorBoundary from "./components/errorBoundary";
 let localSocketDetailCopyWebsocketOnly = false;
 let terminalDataCopy = [];
 let socket;
+
 export default function App() {
   const [ws, setWS] = useState(null);
   const [socketDetails, setSocketDetails] = useState(false);
@@ -218,14 +219,18 @@ export default function App() {
     return <ConnectionError />;
   } else if (socketDetails.user != null) {
     return (
-      <PageManager
-        user={socketDetails.user}
-        terminalData={terminalData}
-        state={{
-          state: socketDetails.state,
-          description: socketDetails.description,
-        }}
-      />
+      <ErrorBoundary>
+        <Suspense fallback={<h1>Loading</h1>}>
+          <PageManager
+            user={socketDetails.user}
+            terminalData={terminalData}
+            state={{
+              state: socketDetails.state,
+              description: socketDetails.description,
+            }}
+          />
+        </Suspense>
+      </ErrorBoundary>
     );
   } else {
     return <h1>Something went wrong, try again later.</h1>;

@@ -1,31 +1,37 @@
-import React, { useState, useEffect, Suspense, lazy, Component } from "react";
+import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Home from "../pages/index";
-import SettingPage from "../pages/settings";
-import UnknownPage from "../pages/unknown";
-import FilePage from "../pages/file";
-import TerminalPage from "../pages/terminal";
 import ConnectionContext from "./connectionContext.jsx";
+import ErrorBoundary from "./errorBoundary.jsx";
 import PrivateRoute from "./privateRoute";
+
+const Home = React.lazy(() => import("../pages/index"));
+const SettingPage = lazy(() => import("../pages/settings"));
+const UnknownPage = lazy(() => import("../pages/unknown"));
+const TerminalPage = lazy(() => import("../pages/terminal"));
+const FilePage = lazy(() => import("../pages/file"));
 
 export default function PageManager(props) {
   return (
     <Router>
       <Switch>
         <Route path="/" exact>
-          <ConnectionContext.Provider
-            value={{
-              state: props.state.state,
-              stateDescription: props.state.description,
-              terminalData: props.terminalData || [],
-              user: {
-                username: props.user.username,
-                permissions: props.user.permissions,
-              },
-            }}
-          >
-            <Home />
-          </ConnectionContext.Provider>
+          <ErrorBoundary>
+            <Suspense>
+              <ConnectionContext.Provider
+                value={{
+                  state: props.state.state,
+                  stateDescription: props.state.description,
+                  terminalData: props.terminalData || [],
+                  user: {
+                    username: props.user.username,
+                    permissions: props.user.permissions,
+                  },
+                }}
+              >
+                <Home />
+              </ConnectionContext.Provider>
+            </Suspense>
+          </ErrorBoundary>
         </Route>
 
         <PrivateRoute
@@ -46,7 +52,9 @@ export default function PageManager(props) {
               },
             }}
           >
-            <SettingPage />
+            <Suspense>
+              <SettingPage />
+            </Suspense>
           </ConnectionContext.Provider>
         </PrivateRoute>
 
@@ -69,7 +77,9 @@ export default function PageManager(props) {
               },
             }}
           >
-            <TerminalPage />
+            <Suspense>
+              <TerminalPage />
+            </Suspense>
           </ConnectionContext.Provider>
         </PrivateRoute>
 
@@ -92,7 +102,9 @@ export default function PageManager(props) {
               },
             }}
           >
-            <FilePage />
+            <Suspense>
+              <FilePage />
+            </Suspense>
           </ConnectionContext.Provider>
         </PrivateRoute>
 
@@ -108,7 +120,9 @@ export default function PageManager(props) {
               },
             }}
           >
-            <UnknownPage />
+            <Suspense>
+              <UnknownPage />
+            </Suspense>
           </ConnectionContext.Provider>
         </Route>
       </Switch>
