@@ -53,7 +53,7 @@ export default function TemperatureChart(props) {
         margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
       >
         <XAxis dataKey="time" />
-        <YAxis />
+        <YAxis type="number" domain={[0, "dataMax+300"]} />
         <Tooltip
           contentStyle={{ backgroundColor: "#373737", border: "none" }}
         />
@@ -72,6 +72,7 @@ export default function TemperatureChart(props) {
     if (data.tools.length == 1) {
       lines.push(
         <Line
+          isAnimationActive={false}
           type="monotone"
           dot={false}
           dataKey={"Extruder (current)"}
@@ -81,6 +82,7 @@ export default function TemperatureChart(props) {
       );
       lines.push(
         <Line
+          isAnimationActive={false}
           type="monotone"
           dot={false}
           dataKey={"Extruder (target)"}
@@ -92,6 +94,7 @@ export default function TemperatureChart(props) {
       for (var i = 0; i < data.tools.length; i++) {
         lines.push(
           <Line
+            isAnimationActive={false}
             type="monotone"
             dot={false}
             dataKey={"Extruder [" + (i + 1) + "] (current)"}
@@ -101,6 +104,7 @@ export default function TemperatureChart(props) {
         );
         lines.push(
           <Line
+            isAnimationActive={false}
             type="monotone"
             dot={false}
             dataKey={"Extruder [" + (i + 1) + "] (target)"}
@@ -113,6 +117,7 @@ export default function TemperatureChart(props) {
     if (data.chamber != null) {
       lines.push(
         <Line
+          isAnimationActive={false}
           type="monotone"
           dot={false}
           dataKey={"Chamber (target)"}
@@ -122,6 +127,7 @@ export default function TemperatureChart(props) {
       );
       lines.push(
         <Line
+          isAnimationActive={false}
           type="monotone"
           dot={false}
           dataKey={"Chamber (current)"}
@@ -133,6 +139,7 @@ export default function TemperatureChart(props) {
     if (data.bed != null) {
       lines.push(
         <Line
+          isAnimationActive={false}
           type="monotone"
           dot={false}
           dataKey={"Bed (current)"}
@@ -142,6 +149,7 @@ export default function TemperatureChart(props) {
       );
       lines.push(
         <Line
+          isAnimationActive={false}
           type="monotone"
           dot={false}
           dataKey={"Bed (target)"}
