@@ -53,7 +53,7 @@ export default function TemperatureChart(props) {
         margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
       >
         <XAxis dataKey="time" />
-        <YAxis type="number" domain={[0, "dataMax+300"]} />
+        <YAxis type="number" domain={[0, 300]} />
         <Tooltip
           contentStyle={{ backgroundColor: "#373737", border: "none" }}
         />
