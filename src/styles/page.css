@@ -41,6 +41,8 @@
   width: calc(100% - 3.25em);
   padding: 1em;
   text-align: center;
+  overflow: auto;
+  height: calc(100vh - 3.25em);
 }
 
 .page.home .column {
