@@ -49,3 +49,10 @@
   background-color: #484848;
   border-radius: 0.4rem;
 }
+
+@media screen and (min-width: 769px) {
+  .page.home .column.is-half {
+    width: calc(50% - 1.625rem);
+    margin-left: auto;
+  }
+}

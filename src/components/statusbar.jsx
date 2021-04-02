@@ -7,14 +7,17 @@ import {
   faCube,
   faExclamationCircle,
   faPlug,
+  faPrint,
+  faTasksAlt,
   faUser,
 } from "@fortawesome/pro-regular-svg-icons";
-import { faSlash } from "@fortawesome/pro-solid-svg-icons";
-import { faCircle } from "@fortawesome/pro-duotone-svg-icons";
+import { faSlash, faFile } from "@fortawesome/pro-solid-svg-icons";
+import { faCircle, faHourglassEnd } from "@fortawesome/pro-duotone-svg-icons";
 import ConnectionContext from "./connectionContext";
 import StatusBarItem from "./statusbarItem";
 import { Link } from "react-router-dom";
 import ConnectionStatusActionButtons from "./connectionStatusActionButtons";
+import { DateTime } from "luxon";
 
 export default function StatusBar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -67,7 +70,6 @@ export default function StatusBar() {
 }
 
 function logout() {
-  console.log("test!");
   localStorage.removeItem("auth");
   sessionStorage.removeItem("auth");
   window.location.reload();
@@ -89,7 +91,6 @@ function getStateItem(state, description, user) {
         </StatusBarItem>
       );
     case "Connected":
-    case "Printing":
       icon = <FontAwesomeIcon icon={faCircle} color="#2aba2a" />;
       if (
         !description ||
@@ -97,104 +98,10 @@ function getStateItem(state, description, user) {
         description.tempData.length == 0
       ) {
         return (
-          <StatusBarItem
-            icon={icon}
-            title={state == "Printing" ? "Printing" : "Printer connected"}
-          >
+          <StatusBarItem icon={icon} title={"Printer connected"}>
             <ConnectionStatusActionButtons state={state} user={user} />
           </StatusBarItem>
         );
-      }
-      let tempComponents = [];
-      let temp = description.tempData[description.tempData.length - 1];
-      if (temp.tools.length == 1) {
-        if (temp.tools[0].targetTemp != 0) {
-          tempComponents.push(
-            <div key="extruder0" className="navbar-item">
-              <b>Extruder:</b>
-              <span className="temperature">
-                {temp.tools[0].currentTemp}°C{" "}
-                <FontAwesomeIcon icon={faArrowRight} />{" "}
-                {temp.tools[0].targetTemp}
-                °C
-              </span>
-            </div>
-          );
-        } else {
-          tempComponents.push(
-            <div key="extruder0" className="navbar-item">
-              <b>Extruder:</b>
-              <span className="temperature">{temp.tools[0].currentTemp}°C</span>
-            </div>
-          );
-        }
-      } else {
-        for (var i = 0; i < temp.tools.length; i++) {
-          if (temp.tools[i].targetTemp != 0) {
-            tempComponents.push(
-              <div key={"extruder" + i} className="navbar-item">
-                <b>Extruder {i + 1}: </b>
-                <span className="temperature">
-                  {temp.tools[i].currentTemp}°C
-                  <FontAwesomeIcon icon={faArrowRight} />
-                  {temp.tools[i].targetTemp}°C
-                </span>
-              </div>
-            );
-          } else {
-            tempComponents.push(
-              <div key={"extruder" + i} className="navbar-item">
-                <span className="temperature">
-                  <b>Extruder {i + 1}: </b>
-                  {temp.tools[i].currentTemp}°C
-                </span>
-              </div>
-            );
-          }
-        }
-      }
-
-      if (temp.bed != null) {
-        if (temp.bed.targetTemp != 0) {
-          tempComponents.push(
-            <div key="bed" className="navbar-item">
-              <b>Bed:</b>
-              <span className="temperature">
-                {temp.bed.currentTemp}°C
-                <FontAwesomeIcon icon={faArrowRight} />
-                {temp.bed.targetTemp}°C
-              </span>
-            </div>
-          );
-        } else {
-          tempComponents.push(
-            <div key="bed" className="navbar-item">
-              <b>Bed:</b>
-              <span className="temperature">{temp.bed.currentTemp}°C</span>
-            </div>
-          );
-        }
-      }
-      if (temp.chamber != null) {
-        if (temp.chamber.targetTemp != 0) {
-          tempComponents.push(
-            <div key="chamber" className="navbar-item">
-              <b>Chamber:</b>
-              <span className="temperature">
-                {temp.chamber.currentTemp}°C
-                <FontAwesomeIcon icon={faArrowRight} />
-                {temp.chamber.targetTemp}°C
-              </span>
-            </div>
-          );
-        } else {
-          tempComponents.push(
-            <div key="chamber" className="navbar-item">
-              <b>Chamber:</b>
-              <span className="temperature">{temp.chamber.currentTemp}°C</span>
-            </div>
-          );
-        }
       }
 
       return (
@@ -202,7 +109,34 @@ function getStateItem(state, description, user) {
           <div className="navbar-item">
             <h1 className="is-size-5">Temperatures:</h1>
           </div>
+          {getTempComponents()}
+          <ConnectionStatusActionButtons state={state} user={user} />
+        </StatusBarItem>
+      );
+
+    case "Printing":
+      icon = <FontAwesomeIcon icon={faPrint} />;
+
+      if (
+        !description ||
+        !description.tempData ||
+        description.tempData.length == 0
+      ) {
+        return (
+          <StatusBarItem icon={icon} title={"Printing"}>
+            <ConnectionStatusActionButtons state={state} user={user} />
+          </StatusBarItem>
+        );
+      }
+      let tempComponents = getTempComponents();
+
+      return (
+        <StatusBarItem size="medium" icon={icon} title="Printing">
+          <div className="navbar-item">
+            <h1 className="is-size-5">Temperatures:</h1>
+          </div>
           {tempComponents}
+          {getprintInfo()}
           <ConnectionStatusActionButtons state={state} user={user} />
         </StatusBarItem>
       );
@@ -227,5 +161,143 @@ function getStateItem(state, description, user) {
           </div>
         </StatusBarItem>
       );
+  }
+  function getTempComponents() {
+    let tempComponents = [];
+    let temp = description.tempData[description.tempData.length - 1];
+    if (temp.tools.length == 1) {
+      if (temp.tools[0].targetTemp != 0) {
+        tempComponents.push(
+          <div key="extruder0" className="navbar-item">
+            <b>Extruder:</b>
+            <span className="statusBarAlignRight">
+              {temp.tools[0].currentTemp}°C{" "}
+              <FontAwesomeIcon icon={faArrowRight} /> {temp.tools[0].targetTemp}
+              °C
+            </span>
+          </div>
+        );
+      } else {
+        tempComponents.push(
+          <div key="extruder0" className="navbar-item">
+            <b>Extruder:</b>
+            <span className="statusBarAlignRight">
+              {temp.tools[0].currentTemp}°C
+            </span>
+          </div>
+        );
+      }
+    } else {
+      for (var i = 0; i < temp.tools.length; i++) {
+        if (temp.tools[i].targetTemp != 0) {
+          tempComponents.push(
+            <div key={"extruder" + i} className="navbar-item">
+              <b>Extruder {i + 1}: </b>
+              <span className="statusBarAlignRight">
+                {temp.tools[i].currentTemp}°C
+                <FontAwesomeIcon icon={faArrowRight} />
+                {temp.tools[i].targetTemp}°C
+              </span>
+            </div>
+          );
+        } else {
+          tempComponents.push(
+            <div key={"extruder" + i} className="navbar-item">
+              <span className="statusBarAlignRight">
+                <b>Extruder {i + 1}: </b>
+                {temp.tools[i].currentTemp}°C
+              </span>
+            </div>
+          );
+        }
+      }
+    }
+
+    if (temp.bed != null) {
+      if (temp.bed.targetTemp != 0) {
+        tempComponents.push(
+          <div key="bed" className="navbar-item">
+            <b>Bed:</b>
+            <span className="statusBarAlignRight">
+              {temp.bed.currentTemp}°C
+              <FontAwesomeIcon icon={faArrowRight} />
+              {temp.bed.targetTemp}°C
+            </span>
+          </div>
+        );
+      } else {
+        tempComponents.push(
+          <div key="bed" className="navbar-item">
+            <b>Bed:</b>
+            <span className="statusBarAlignRight">
+              {temp.bed.currentTemp}°C
+            </span>
+          </div>
+        );
+      }
+    }
+    if (temp.chamber != null) {
+      if (temp.chamber.targetTemp != 0) {
+        tempComponents.push(
+          <div key="chamber" className="navbar-item">
+            <b>Chamber:</b>
+            <span className="statusBarAlignRight">
+              {temp.chamber.currentTemp}°C
+              <FontAwesomeIcon icon={faArrowRight} />
+              {temp.chamber.targetTemp}°C
+            </span>
+          </div>
+        );
+      } else {
+        tempComponents.push(
+          <div key="chamber" className="navbar-item">
+            <b>Chamber:</b>
+            <span className="statusBarAlignRight">
+              {temp.chamber.currentTemp}°C
+            </span>
+          </div>
+        );
+      }
+    }
+    return tempComponents;
+  }
+  function getprintInfo() {
+    if (!description || !description.printInfo) {
+      return null;
+    } else {
+      let now = DateTime.now();
+      let end = DateTime.fromISO(description.printInfo.estEndTime);
+      let diffRow = null;
+      const diff = now.diff(end, "minutes");
+
+      if (!isNaN(diff)) {
+        diffRow = (
+          <div className="navbar-item">
+            <FontAwesomeIcon icon={faHourglassEnd} />
+            <span className="statusBarAlignRight">
+              {" "}
+              {Math.floor(Math.abs(diff.minutes))} mins remaining
+            </span>
+          </div>
+        );
+      }
+      return (
+        <>
+          <div className="navbar-item">
+            <FontAwesomeIcon icon={faFile} />
+            <span className="statusBarAlignRight">
+              {description.printInfo.file.name}
+            </span>
+          </div>
+          <div className="navbar-item">
+            <FontAwesomeIcon icon={faTasksAlt} />{" "}
+            <span className="statusBarAlignRight">
+              {description.printInfo.progress}%
+            </span>
+          </div>
+          {diffRow}
+        </>
+      );
+    }
   }
 }
