@@ -39,20 +39,21 @@
 
 .page-content {
   width: calc(100% - 3.25em);
-  padding: 1em;
+  padding: 2em 3em;
   text-align: center;
   overflow: auto;
   height: calc(100vh - 3.25em);
 }
 
-.page.home .column {
+.page.home .columns.is-multiline > .column {
   background-color: #484848;
-  border-radius: 0.4rem;
+  margin-bottom: 2em;
+  filter: drop-shadow(5px 4px 4px rgba(0, 0, 0, 0.25));
+  border: 3px #b94c4c3f solid;
 }
 
 @media screen and (min-width: 769px) {
   .page.home .column.is-half {
     width: calc(50% - 1.625rem);
-    margin-left: auto;
   }
 }
