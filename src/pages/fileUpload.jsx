@@ -41,7 +41,7 @@ export default function FileUpload(props) {
       >
         {state == 2
           ? "This file already exists, would you like to replace the file?"
-          : "This file is too large, make sure your gcode file is under 20mb"}
+          : "This file is too large, make sure your gcode file is under 100mb"}
       </h2>
       <br />
       <div
@@ -172,7 +172,7 @@ export default function FileUpload(props) {
     if (!file || uploading) {
       return;
     }
-    if (file.size > 20 * 1024 * 1024) {
+    if (file.size > 100 * 1024 * 1024) {
       return setState(3);
     }
     if (!file.name.trim().endsWith(".gcode")) {
