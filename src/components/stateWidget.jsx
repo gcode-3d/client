@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import ConnectionContext from "./connectionContext";
-import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBug,
@@ -8,7 +7,7 @@ import {
   faPrint,
   faSpinnerThird,
 } from "@fortawesome/pro-regular-svg-icons";
-import { faCircle } from "@fortawesome/pro-duotone-svg-icons";
+import { faCircle, faWifi } from "@fortawesome/pro-duotone-svg-icons";
 import emitter from "../tools/emitter";
 import "../styles/stateWidget.css";
 import PrintStatusWidget from "./printStatusWidget";
@@ -21,7 +20,6 @@ export default function StateWidget() {
     context.stateDescription != null &&
     context.stateDescription.printInfo != null
   ) {
-    console.log(context.stateDescription.printInfo);
     printInfo = {
       printTime:
         context.stateDescription.printInfo.estEndTime !== null

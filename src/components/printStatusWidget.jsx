@@ -82,7 +82,6 @@ function getTemperatureLabels(temps) {
   if (!temps) {
     return "No temperatures reported";
   }
-  console.log(temps);
   let bed = null;
   let chamber = null;
 

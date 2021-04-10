@@ -89,8 +89,21 @@ export default function FileRow({
     ) {
       actions.push(
         <FileRowActionButton
-          title={"Rename " + file.name}
+          title={
+            context.state == "Printing"
+              ? file.name == context.stateDescription.printInfo.file.name
+                ? "Cannot rename " + file.name + ". It's currently printing."
+                : "Rename " + file.name
+              : "Rename " + file.name
+          }
           key="edit"
+          disabled={
+            context.state == "Printing"
+              ? file.name == context.stateDescription.printInfo.file.name
+                ? true
+                : false
+              : false
+          }
           color="warning"
           onClick={() => renameFile(file, reloadPage)}
         >
@@ -99,9 +112,22 @@ export default function FileRow({
       );
       actions.push(
         <FileRowActionButton
-          title={"Delete " + file.name}
+          title={
+            context.state == "Printing"
+              ? file.name == context.stateDescription.printInfo.file.name
+                ? "Cannot delete " + file.name + ". It's currently printing."
+                : "Delete " + file.name
+              : "Delete " + file.name
+          }
           key="delete"
           color="danger"
+          disabled={
+            context.state == "Printing"
+              ? file.name == context.stateDescription.printInfo.file.name
+                ? true
+                : false
+              : false
+          }
           onClick={() => {
             deleteFile(file, reloadPage);
           }}
@@ -147,7 +173,7 @@ function deleteFile(file, cb) {
     headers,
   })
     .then((res) => {
-      console.log(res);
+      console.log(res.status);
       if (res.ok) {
         return cb();
       } else {
