@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/pro-regular-svg-icons";
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import emitter from "../tools/emitter";
+import getURL from "../tools/geturl";
 
 export default function ConnectionStatusActionButtons(props) {
   const [loading, setLoading] = useState(false);
@@ -31,10 +31,7 @@ export default function ConnectionStatusActionButtons(props) {
               title="Disconnect device"
               className="button is-small is-danger"
               disabled={loading}
-              onClick={() => {
-                setLoading(true);
-                emitter.emit("client.state.update", "disconnect");
-              }}
+              onClick={disconnect}
             >
               <FontAwesomeIcon icon={faPowerOff} />
             </button>
@@ -42,10 +39,7 @@ export default function ConnectionStatusActionButtons(props) {
               title="Reconnect Device"
               disabled={loading}
               className="button is-small is-warning"
-              onClick={() => {
-                setLoading(true);
-                emitter.emit("client.state.update", "reconnect");
-              }}
+              onClick={reconnect}
             >
               <FontAwesomeIcon icon={faSync} />
             </button>
@@ -64,10 +58,7 @@ export default function ConnectionStatusActionButtons(props) {
             className="button is-small is-danger"
             disabled={loading}
             key="Disconnect"
-            onClick={() => {
-              setLoading(true);
-              emitter.emit("client.state.update", "disconnect");
-            }}
+            onClick={disconnect}
           >
             <FontAwesomeIcon icon={faPowerOff} />
           </button>
@@ -78,10 +69,7 @@ export default function ConnectionStatusActionButtons(props) {
             title="Reconnect Device"
             disabled={loading}
             className="button is-small is-warning"
-            onClick={() => {
-              setLoading(true);
-              emitter.emit("client.state.update", "reconnect");
-            }}
+            onClick={reconnect}
           >
             <FontAwesomeIcon icon={faSync} />
           </button>
@@ -94,10 +82,7 @@ export default function ConnectionStatusActionButtons(props) {
             className="button is-small is-danger"
             disabled={loading}
             key="CancelPrint"
-            onClick={() => {
-              setLoading(true);
-              emitter.emit("client.print.cancel", "print_cancel");
-            }}
+            onClick={cancelPrint}
           >
             <FontAwesomeIcon icon={faStopCircle} />
           </button>
@@ -120,10 +105,7 @@ export default function ConnectionStatusActionButtons(props) {
               title="Connect Device"
               disabled={loading}
               className={"button is-success " + (loading ? "is-loading" : "")}
-              onClick={() => {
-                setLoading(true);
-                emitter.emit("client.state.update", "connect");
-              }}
+              onClick={connect}
             >
               <FontAwesomeIcon icon={faLink} /> Connect printer
             </button>
@@ -132,5 +114,41 @@ export default function ConnectionStatusActionButtons(props) {
       );
     default:
       return null;
+  }
+  function cancelPrint() {
+    sendCommand("/api/print/", "DELETE");
+  }
+  function connect() {
+    sendCommand("/api/connection", "PUT");
+  }
+  function disconnect() {
+    sendCommand("/api/connection", "DELETE");
+  }
+  function reconnect() {
+    sendCommand("/api/connection", "POST");
+  }
+  function sendCommand(url, method) {
+    setLoading(true);
+    let headers = new Headers();
+    headers.append(
+      "Authorization",
+      "auth-" + (localStorage.getItem("auth") || sessionStorage.getItem("auth"))
+    );
+
+    var requestOptions = {
+      method: method,
+      headers: headers,
+    };
+
+    fetch(getURL() + url, requestOptions)
+      .then((response) => {
+        if (response.ok) {
+          return setLoading(false);
+        }
+        console.error(
+          `Couldn't update connection. status received: ${response.status} - method used: ${method}`
+        );
+      })
+      .catch((error) => console.log("error", error));
   }
 }

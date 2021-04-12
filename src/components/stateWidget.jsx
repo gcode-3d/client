@@ -8,9 +8,9 @@ import {
   faSpinnerThird,
 } from "@fortawesome/pro-regular-svg-icons";
 import { faCircle, faWifi } from "@fortawesome/pro-duotone-svg-icons";
-import emitter from "../tools/emitter";
 import "../styles/stateWidget.css";
 import PrintStatusWidget from "./printStatusWidget";
+import getURL from "../tools/geturl";
 
 export default function StateWidget() {
   let context = useContext(ConnectionContext);
@@ -140,61 +140,35 @@ function StatusColumn(props) {
   }
 }
 
-function QuickActions({ state, description }) {
+function QuickActions({ state }) {
   let actions = [];
 
   let connectButton = (
-    <a
-      key="connect"
-      onClick={() => {
-        emitter.emit("client.state.update", "connect");
-      }}
-    >
+    <a key="connect" onClick={connect}>
       Connect printer
     </a>
   );
 
   let reconnectButton = (
-    <a
-      key="reconnect"
-      onClick={() => {
-        emitter.emit("client.state.update", "reconnect");
-      }}
-    >
+    <a key="reconnect" onClick={reconnect}>
       Reconnect printer
     </a>
   );
 
   let disconnectButton = (
-    <a
-      key="disconnect"
-      onClick={() => {
-        emitter.emit("client.state.update", "disconnect");
-      }}
-    >
+    <a key="disconnect" onClick={disconnect}>
       Disconnect printer
     </a>
   );
 
   let emergencyButton = (
-    <a
-      key="emergency"
-      style={{ color: "#B94C4C" }}
-      onClick={() => {
-        emitter.emit("client.state.update", "EMERGENCY");
-      }}
-    >
+    <a key="emergency" style={{ color: "#B94C4C" }} onClick={emergency}>
       Emergency shutdown
     </a>
   );
 
   let cancelPrintButton = (
-    <a
-      key="cancel"
-      onClick={() => {
-        emitter.emit("client.state.update", "cancel");
-      }}
-    >
+    <a key="cancel" onClick={cancel}>
       cancel printer
     </a>
   );
@@ -228,4 +202,41 @@ function QuickActions({ state, description }) {
       <div className="spacedList">{actions}</div>
     </div>
   );
+  function connect() {
+    sendCommand("/api/connection/", "PUT");
+  }
+  function disconnect() {
+    sendCommand("/api/connection/", "DELETE");
+  }
+  function reconnect() {
+    sendCommand("/api/connection/", "POST");
+  }
+  function emergency() {
+    sendCommand("/api/connection/emergency/", "POST");
+  }
+  function cancel() {
+    sendCommand("/api/print/cancel", "PUT");
+  }
+  function sendCommand(url, method) {
+    let headers = new Headers();
+    headers.append(
+      "Authorization",
+      "auth-" + (localStorage.getItem("auth") || sessionStorage.getItem("auth"))
+    );
+
+    var requestOptions = {
+      method: method,
+      headers: headers,
+    };
+
+    fetch(getURL() + url, requestOptions)
+      .then((response) => {
+        if (!response.ok) {
+          console.error(
+            `Couldn't update connection. status received: ${response.status} - method used: ${method}`
+          );
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
 }

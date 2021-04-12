@@ -59,7 +59,6 @@ export default function FileRow({
             loading={props.print_loading}
             onClick={() => {
               setSelectedPrint();
-              emitter.emit("client.print.create", file.name);
             }}
           >
             <FontAwesomeIcon icon={faPrint} />

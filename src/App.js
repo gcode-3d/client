@@ -15,11 +15,6 @@ export default function App() {
   const [isAuthenticated, setAuthenticatedState] = useState(false);
   var timeout = 250;
   useEffect(() => {
-    Emitter.on("client.tryConnect", checkAndTryReconnect);
-    Emitter.on("client.state.update", changeConnectionState);
-    Emitter.on("client.print.create", setPrintJob);
-    Emitter.on("client.print.cancel", cancelPrintJob);
-    Emitter.on("client.terminal.send", sendTerminalCommand);
     return handleLogin();
   }, []);
 
@@ -79,6 +74,7 @@ export default function App() {
       localSocketDetailCopyWebsocketOnly = null;
       terminalDataCopy = [];
       if (e.code == 4001) {
+        console.log("4001");
         localStorage.removeItem("auth");
         sessionStorage.removeItem("auth");
         return setAuthenticatedState(false);
@@ -179,6 +175,7 @@ export default function App() {
         break;
       case "message_receive":
         if (terminalDataCopy.length > 0) {
+          Emitter.emit("terminal.receive", data.content);
           let lastMessage = terminalDataCopy[terminalDataCopy.length - 1];
           if (lastMessage.data === data.content.message) {
             let temp = [...terminalDataCopy];
@@ -195,6 +192,7 @@ export default function App() {
             type: data.content.type,
             data: data.content.message,
             amount: 1,
+            id: data.content.type == "INPUT" ? data.content.id : null,
           },
         ]);
 
@@ -204,6 +202,7 @@ export default function App() {
             type: data.content.type,
             data: data.content.message,
             amount: 1,
+            id: data.content.type == "INPUT" ? data.content.id : null,
           },
         ];
 
@@ -234,44 +233,5 @@ export default function App() {
     );
   } else {
     return <h1>Something went wrong, try again later.</h1>;
-  }
-
-  function changeConnectionState(state) {
-    socket.send(
-      JSON.stringify({
-        action: "connection_update",
-        data: {
-          new_state: state,
-        },
-      })
-    );
-  }
-  function setPrintJob(filename) {
-    socket.send(
-      JSON.stringify({
-        action: "print_create",
-        data: {
-          name: filename,
-        },
-      })
-    );
-  }
-  function cancelPrintJob(filename) {
-    socket.send(
-      JSON.stringify({
-        action: "print_cancel",
-        data: {},
-      })
-    );
-  }
-  function sendTerminalCommand(command) {
-    socket.send(
-      JSON.stringify({
-        action: "terminal_send",
-        data: {
-          command,
-        },
-      })
-    );
   }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import "../styles/filePage.css";
 import PageContainer from "../components/pageContainer";
-import GETURL from "../tools/geturl";
+import getURL from "../tools/geturl";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSort,
@@ -57,7 +57,7 @@ export default function FilePage() {
           : localStorage.getItem("auth"))
     );
 
-    fetch(GETURL() + "/api/files", {
+    fetch(getURL() + "/api/files", {
       method: "GET",
       headers: headers,
     })
@@ -72,7 +72,6 @@ export default function FilePage() {
             return;
           }
           setLoading(false);
-          // Give the ilusion the button does anything, because usually this list is loaded quickly with no / just a few files
         }, 1000);
       })
       .catch((e) => {
@@ -172,6 +171,34 @@ export default function FilePage() {
                   }
                   setSelectedPrint={() => {
                     setSelectedPrint(file.name);
+                    let headers = new Headers();
+                    headers.append(
+                      "Authorization",
+                      "auth-" +
+                        (localStorage.getItem("auth") ||
+                          sessionStorage.getItem("auth"))
+                    );
+                    headers.append("content-type", "application/json");
+
+                    var requestOptions = {
+                      method: "PUT",
+                      body: JSON.stringify({ printName: file.name }),
+                      headers: headers,
+                    };
+
+                    fetch(getURL() + "/api/print", requestOptions)
+                      .then((response) => {
+                        if (!response.ok) {
+                          setSelectedPrint(null);
+                          console.error(
+                            `Couldn't start print. Status received: ${response.status} `
+                          );
+                        }
+                      })
+                      .catch((error) => {
+                        console.log("error", error);
+                        setSelectedPrint(null);
+                      });
                   }}
                   key={file.name}
                 />
