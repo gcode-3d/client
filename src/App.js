@@ -174,37 +174,52 @@ export default function App() {
 
         break;
       case "message_receive":
-        if (terminalDataCopy.length > 0) {
-          Emitter.emit("terminal.receive", data.content);
-          let lastMessage = terminalDataCopy[terminalDataCopy.length - 1];
-          if (lastMessage.data === data.content.message) {
-            let temp = [...terminalDataCopy];
-            temp[terminalDataCopy.length - 1].amount++;
-            setTerminalData(temp);
+        data.content
+          .sort((a, b) => {
+            if (new Date(a.time).getTime() > new Date(b.time)) {
+              return 1;
+            } else if (new Date(a.time).getTime() < new Date(b.time)) {
+              return -1;
+            }
+            return 0;
+          })
+          .forEach((content) => {
+            if (terminalDataCopy.length > 0) {
+              Emitter.emit("terminal.receive", content);
+              let lastMessage = terminalDataCopy[terminalDataCopy.length - 1];
+              if (lastMessage.data === content.message) {
+                let temp = [...terminalDataCopy];
+                temp[terminalDataCopy.length - 1].amount++;
+                setTerminalData(temp);
+                terminalDataCopy = temp;
+                return;
+              }
+            }
 
-            terminalDataCopy = temp;
-            return;
-          }
-        }
-        setTerminalData([
-          ...terminalDataCopy.slice(Math.max(terminalDataCopy.length - 300, 0)),
-          {
-            type: data.content.type,
-            data: data.content.message,
-            amount: 1,
-            id: data.content.type == "INPUT" ? data.content.id : null,
-          },
-        ]);
+            setTerminalData([
+              ...terminalDataCopy.slice(
+                Math.max(terminalDataCopy.length - 300, 0)
+              ),
+              {
+                type: content.type,
+                data: content.message,
+                amount: 1,
+                id: content.type == "INPUT" ? content.id : null,
+              },
+            ]);
 
-        terminalDataCopy = [
-          ...terminalDataCopy.slice(Math.max(terminalDataCopy.length - 300, 0)),
-          {
-            type: data.content.type,
-            data: data.content.message,
-            amount: 1,
-            id: data.content.type == "INPUT" ? data.content.id : null,
-          },
-        ];
+            terminalDataCopy = [
+              ...terminalDataCopy.slice(
+                Math.max(terminalDataCopy.length - 300, 0)
+              ),
+              {
+                type: content.type,
+                data: content.message,
+                amount: 1,
+                id: content.type == "INPUT" ? content.id : null,
+              },
+            ];
+          });
 
         break;
       default:
