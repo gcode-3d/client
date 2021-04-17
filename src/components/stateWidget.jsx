@@ -20,12 +20,12 @@ export default function StateWidget() {
     context.stateDescription != null &&
     context.stateDescription.printInfo != null
   ) {
+    let diff =
+      new Date(context.stateDescription.printInfo.estEndTime || 0).getTime() -
+      new Date(context.stateDescription.printInfo.startTime).getTime();
     printInfo = {
-      printTime:
-        context.stateDescription.printInfo.estEndTime !== null
-          ? new Date(context.stateDescription.printInfo.estEndTime).getTime() -
-            new Date(context.stateDescription.printInfo.startTime).getTime()
-          : 0,
+      printTime: !context.stateDescription.printInfo.estEndTime ? 0 : diff,
+      startTime: context.stateDescription.printInfo.startTime,
       progress: context.stateDescription.printInfo.progress,
       tempInfo:
         context.stateDescription.tempData != null
@@ -50,6 +50,7 @@ export default function StateWidget() {
         {context.state == "Printing" && context.stateDescription.printInfo && (
           <PrintStatusWidget
             printTime={printInfo.printTime}
+            startTime={new Date(printInfo.startTime)}
             progress={printInfo.progress}
             tempInfo={printInfo.tempInfo}
           />
