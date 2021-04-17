@@ -22,7 +22,6 @@ let settingInfo = {
 };
 
 export default function SettingsPage() {
-  const [areFieldsDisabled, setDisableFields] = useState(false);
   const [loadedSettings, setLoadedSettings] = useState([]);
 
   useEffect(() => {
@@ -97,15 +96,15 @@ function fetchSettings() {
         let json = await response.json();
         let settings = Object.entries(json).map((entry) => {
           return {
-            name:
-              settingInfo[entry[0]]?.name ||
-              "Unknown setting (" + entry[0] + ")",
-            description:
-              settingInfo[entry[0]]?.description ||
-              "Unknown setting (" + entry[0] + ")",
+            name: settingInfo[entry[0]]
+              ? settingInfo[entry[0]].name
+              : "Unknown setting (" + entry[0] + ")",
+            description: settingInfo[entry[0]]
+              ? settingInfo[entry[0]].description
+              : "Unknown setting (" + entry[0] + ")",
             _name: entry[0],
             value: entry[1],
-            example: settingInfo[entry[0]]?.example || "",
+            example: settingInfo[entry[0]] ? settingInfo[entry[0]].example : "",
           };
         });
         return resolve(settings);
