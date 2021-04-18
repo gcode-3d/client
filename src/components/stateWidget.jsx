@@ -216,7 +216,7 @@ function QuickActions({ state }) {
     sendCommand("/api/connection/emergency/", "POST");
   }
   function cancel() {
-    sendCommand("/api/print/cancel", "PUT");
+    sendCommand("/api/print/", "DELETE");
   }
   function sendCommand(url, method) {
     let headers = new Headers();
