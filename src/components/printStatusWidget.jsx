@@ -21,7 +21,7 @@ export default function printStatusWidget(props) {
       </h5>
     </div>
   );
-  if (!isNaN(props.printTime)) {
+  if (!isNaN(props.printTime) && props.printTime !== 0) {
     printTime = (
       <div>
         <h5 className="is-size-5">
