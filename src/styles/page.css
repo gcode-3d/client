@@ -1,7 +1,7 @@
 .sidebar {
   width: 3.25rem;
   height: calc(100vh - 3.25rem);
-  background-color: #373333;
+  background-color: #2b2b2b;
   display: flex;
   padding-top: 1rem;
   flex-direction: column;
@@ -34,22 +34,23 @@
 
 .page {
   display: flex;
+  background-color: #171717;
   flex-direction: row;
 }
 
 .page-content {
   width: calc(100% - 3.25em);
-  padding: 2em 3em;
+  padding: 3em;
   text-align: center;
   overflow: auto;
   height: calc(100vh - 3.25em);
 }
 
 .page.home .columns.is-multiline > .column {
-  background-color: #484848;
+  background-color: #202020;
   margin-bottom: 2em;
+  border-radius: 4px;
   filter: drop-shadow(5px 4px 4px rgba(0, 0, 0, 0.25));
-  border: 3px #b94c4c3f solid;
 }
 
 @media screen and (min-width: 769px) {

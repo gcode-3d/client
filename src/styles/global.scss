@@ -2,8 +2,9 @@
 $text: rgb(221, 209, 209);
 $text-strong: white;
 $title-color: $text;
-$background: #595959;
-$scheme-main: #484848;
+$background: black;
+$scheme-main: #171717;
+$navbar-dropdown-background-color: #2b2b2b;
 $scheme-main-bis: #424242;
 $link: rgb(177, 177, 177);
 $border: #796f6f;
@@ -25,7 +26,7 @@ $file-cta-background-color: $scheme-main-bis;
 
 body,
 html {
-  background-color: #595959;
+  background-color: $background;
   color: white;
   font-family: "Roboto", sans-serif;
   height: 100%;
