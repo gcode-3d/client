@@ -22,6 +22,11 @@ export default function printStatusWidget(props) {
     </div>
   );
   if (!isNaN(props.printTime) && props.printTime !== 0) {
+    let amountLeft =
+      props.startTime.getTime() + props.printTime - new Date().getTime();
+    if (amountLeft < 0) {
+      amountLeft = amountLeft * -1;
+    }
     printTime = (
       <div>
         <h5 className="is-size-5">
@@ -30,11 +35,7 @@ export default function printStatusWidget(props) {
               <FontAwesomeIcon icon={faHourglassEnd} />
             </span>
             {
-              Duration.fromMillis(
-                props.startTime.getTime() +
-                  props.printTime -
-                  new Date().getTime()
-              )
+              Duration.fromMillis(amountLeft)
                 .toISOTime({
                   suppressMilliseconds: true,
                   suppressSeconds: true,
