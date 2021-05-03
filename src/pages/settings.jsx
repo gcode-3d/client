@@ -19,6 +19,10 @@ let settingInfo = {
       "Used to estimate time remaining. Recommended value between -1 and 1.",
     example: "Recommended value between -1 and 1.",
   },
+  B_savePrinterNotifications: {
+    name: "Save printer notifications",
+    description: "Store printer messages in your notifications panel.",
+  },
 };
 
 export default function SettingsPage() {
@@ -38,10 +42,30 @@ export default function SettingsPage() {
     };
   }, []);
 
+  if (loadedSettings.length == 0) {
+    return (
+      <PageContainer page="settings">
+        <div className="container has-text-left">
+          <h1 className="title">Settings</h1>
+          {Object.entries(settingInfo).map((i) => (
+            <SettingRow
+              key={i[0] + "-loading"}
+              _name={"Loading"}
+              name={i[1].name}
+              example={i[1].example}
+              description={i[1].description}
+              loading={true}
+            />
+          ))}
+        </div>
+      </PageContainer>
+    );
+  }
+
   return (
     <PageContainer page="settings">
       <div className="container has-text-left">
-        <h1 className="title">Instellingen</h1>
+        <h1 className="title">Settings</h1>
         {loadedSettings.map((i) => (
           <SettingRow
             key={i._name}

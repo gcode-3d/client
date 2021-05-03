@@ -71,8 +71,6 @@ label.label {
   .navbar-menu.is-active {
     text-align: right;
     margin-left: 3.25em;
-    border-left: 1px #b94c4c solid;
-    border-bottom: 1px #b94c4c solid;
     border-left: 1px $special-red solid;
     border-bottom: 1px $special-red solid;
     background-color: #373333;
@@ -82,7 +80,6 @@ label.label {
   }
   a.navbar-item:hover {
     background-color: #595959;
-    color: #b94c4c;
     color: $special-red;
   }
 
@@ -105,4 +102,37 @@ label.label {
 .table tr.is-selected td,
 .table tr.is-selected th {
   border-color: $border;
+}
+
+.select {
+  width: 100%;
+}
+.select select {
+  width: 100%;
+}
+.control {
+  min-width: 15em;
+}
+
+.animated-loading {
+  width: 100%;
+  border-radius: 4px;
+  line-height: 1.5;
+  height: 2.5em;
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right, #111 4%, black 15%, #111 36%);
+  background-size: 1000px 100%;
+}
+
+.control .animated-loading {
+  padding: calc(0.5em - 1px) calc(0.75em - 1px);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
 }

@@ -57,6 +57,20 @@ export default function SettingRow(props) {
       )}
     </>
   );
+
+  if (props.loading) {
+    return (
+      <div className="field is-horizontal">
+        <div className="field-label is-normal has-text-left animated-loading"></div>
+        <div className="field-body">
+          <div className="control">
+            <div className="animated-loading"></div>
+          </div>
+          {statusIcons}
+        </div>
+      </div>
+    );
+  }
   if (props._name.startsWith("B")) {
     return (
       <div className="field is-horizontal">
