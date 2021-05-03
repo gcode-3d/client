@@ -4,19 +4,18 @@ import {
 } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import GETURL from "../../tools/geturl";
-import SettingDeviceField from "./settingDeviceField";
+import GETURL from "../tools/geturl";
 
 let activeTimeout;
-
+let isUnmounted = false;
 export default function SettingRow(props) {
   const [value, setValue] = useState(props.value == null ? "" : props.value);
   const [loading, setLoading] = useState(false);
   const [errorInfo, setError] = useState(null);
   const [saved, setSaved] = useState(false);
-  const [devices, setDevices] = useState([]);
 
   useEffect(() => {
+    isUnmounted = false;
     if (props._name.startsWith("B")) {
       saveSetting();
     }
@@ -27,6 +26,7 @@ export default function SettingRow(props) {
       if (activeTimeout) {
         clearTimeout(activeTimeout);
       }
+      isUnmounted = true;
     };
   }, []);
 
@@ -121,23 +121,6 @@ export default function SettingRow(props) {
     );
   }
 
-  if (props._name.startsWith("D_")) {
-    return (
-      <SettingDeviceField
-        onChange={handleChange}
-        loading={loading}
-        statusIcons={statusIcons}
-        placeholder={props.example}
-        setError={() => {
-          setError("Couldn't load device list");
-        }}
-        value={value}
-        name={props.name}
-        description={props.description}
-      />
-    );
-  }
-
   return (
     <div className="field is-horizontal">
       <div className="field-label is-normal has-text-left">
@@ -194,7 +177,6 @@ export default function SettingRow(props) {
       props._name.startsWith("N_") &&
       (value.endsWith(".") || value.endsWith(","))
     ) {
-      console.log("CHANGING");
       setValue(value.slice(0, -1));
     }
 
@@ -217,8 +199,10 @@ export default function SettingRow(props) {
     };
     fetch(GETURL() + "/api/settings/", requestOptions)
       .then(async (response) => {
+        if (isUnmounted) {
+          return;
+        }
         setLoading(false);
-
         if (response.ok) {
           setSaved(true);
           if (activeTimeout) {
