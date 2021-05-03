@@ -6,8 +6,13 @@ export default function ActionBar(props) {
     items[0] = (
       <div
         key={0}
-        onClick={props.items.props.onClick}
-        className="column is-narrow is-hoverable"
+        onClick={
+          props.items.props.disabled ? undefined : props.items.props.onClick
+        }
+        className={
+          "column is-narrow is-hoverable" +
+          (props.items.props.disabled ? " is-disabled" : "")
+        }
       >
         {props.items}
       </div>
@@ -17,8 +22,11 @@ export default function ActionBar(props) {
       return (
         <div
           key={n}
-          onClick={i.onClick}
-          className="column is-narrow is-hoverable"
+          onClick={i.props.disabled ? undefined : i.props.onClick}
+          className={
+            "column is-narrow is-hoverable" +
+            (i.props.disabled ? " is-disabled" : "")
+          }
         >
           {i}
         </div>

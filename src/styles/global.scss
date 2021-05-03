@@ -9,6 +9,8 @@ $scheme-main-bis: #424242;
 $link: rgb(177, 177, 177);
 $border: #796f6f;
 $file-cta-background-color: $scheme-main-bis;
+$table-row-active-background-color: #2b2b2b;
+$special-red: #b94c4c;
 
 @import "../../node_modules/bulma/sass/utilities/_all.sass";
 @import "../../node_modules/bulma/sass/base/_all.sass";
@@ -71,6 +73,8 @@ label.label {
     margin-left: 3.25em;
     border-left: 1px #b94c4c solid;
     border-bottom: 1px #b94c4c solid;
+    border-left: 1px $special-red solid;
+    border-bottom: 1px $special-red solid;
     background-color: #373333;
     width: calc(100% - 3.25em);
     position: absolute;
@@ -79,6 +83,7 @@ label.label {
   a.navbar-item:hover {
     background-color: #595959;
     color: #b94c4c;
+    color: $special-red;
   }
 
   .navbar-menu .navbar-end {
@@ -95,4 +100,9 @@ label.label {
 
 .button.has-icon svg {
   margin-right: 0.5em;
+}
+
+.table tr.is-selected td,
+.table tr.is-selected th {
+  border-color: $border;
 }

@@ -9,6 +9,7 @@ const SettingPage = lazy(() => import("../pages/settings"));
 const UnknownPage = lazy(() => import("../pages/unknown"));
 const TerminalPage = lazy(() => import("../pages/terminal"));
 const FilePage = lazy(() => import("../pages/file"));
+const NotificationPage = lazy(() => import("../pages/notifications"));
 
 export default function PageManager(props) {
   return (
@@ -29,6 +30,26 @@ export default function PageManager(props) {
                 }}
               >
                 <Home />
+              </ConnectionContext.Provider>
+            </Suspense>
+          </ErrorBoundary>
+        </Route>
+
+        <Route path="/notifications">
+          <ErrorBoundary>
+            <Suspense>
+              <ConnectionContext.Provider
+                value={{
+                  state: props.state.state,
+                  stateDescription: props.state.description,
+                  terminalData: props.terminalData || [],
+                  user: {
+                    username: props.user.username,
+                    permissions: props.user.permissions,
+                  },
+                }}
+              >
+                <NotificationPage />
               </ConnectionContext.Provider>
             </Suspense>
           </ErrorBoundary>

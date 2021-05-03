@@ -1,0 +1,33 @@
+@import "../styles/global.scss";
+.is-disabled {
+  opacity: 0.6;
+}
+
+.is-disabled:hover {
+  background-color: transparent !important;
+  cursor: not-allowed !important;
+}
+
+.notifications th.time {
+  width: 25%;
+}
+
+.notifications th.archiveButtons {
+  width: 1em;
+}
+
+.notifications tr.dismissed {
+  text-decoration: line-through !important;
+}
+
+.notifications tr.dismissed span {
+  text-decoration: line-through !important;
+}
+
+.notifications td.dismiss {
+  cursor: pointer;
+}
+
+.notifications td .icon {
+  color: $special-red;
+}

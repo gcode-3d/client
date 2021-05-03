@@ -3,12 +3,14 @@ import {
   faHome,
   faFolderTree,
   faTerminal,
+  faBell,
 } from "@fortawesome/pro-regular-svg-icons";
 import {
   faHome as faHomeSelected,
   faWrench as faWrenchSelected,
   faFolderTree as faFolderTreeSelected,
   faTerminal as faTerminalSelected,
+  faBell as faBellSelected,
 } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext } from "react";
@@ -68,7 +70,22 @@ export default function StatusBar(props) {
       </Link>
     );
   }
-
+  let notificationItem = (
+    <Link
+      to="/notifications"
+      className={
+        props.pageName == "notifications"
+          ? "sidebar-item selected"
+          : "sidebar-item"
+      }
+    >
+      <span className="icon">
+        <FontAwesomeIcon
+          icon={props.pageName == "notifications" ? faBellSelected : faBell}
+        />
+      </span>
+    </Link>
+  );
   let settingItem =
     permissions["admin"] ||
     permissions["settings.edit"] ||
@@ -104,7 +121,10 @@ export default function StatusBar(props) {
         </span>
       </Link>
       {allowedEntries}
-      <div className="sidebar-end">{settingItem}</div>
+      <div className="sidebar-end">
+        {settingItem}
+        {notificationItem}
+      </div>
     </div>
   );
 }
