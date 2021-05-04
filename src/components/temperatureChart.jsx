@@ -10,10 +10,12 @@ import {
   Line,
 } from "recharts";
 import { DateTime } from "luxon";
-import ConnectionContext from "./connectionContext";
-export default function TemperatureChart(props) {
-  const connectionContext = useContext(ConnectionContext);
-  if (!["Connected", "Printing"].includes(connectionContext.state)) {
+import { useSelector } from "react-redux";
+
+export default function TemperatureChart() {
+  const printerInfo = useSelector((state) => state.printer);
+  const tempData = useSelector((state) => state.tempData);
+  if (!["Connected", "Printing"].includes(printerInfo.state)) {
     return (
       <div>
         <h1 className="title">Connect your printer</h1>
@@ -24,11 +26,7 @@ export default function TemperatureChart(props) {
     );
   }
 
-  if (
-    connectionContext.stateDescription == null ||
-    connectionContext.stateDescription.tempData == null ||
-    connectionContext.stateDescription.tempData.length == 0
-  ) {
+  if (tempData.length == 0) {
     return (
       <div>
         <h1 className="title">Loading temperature graph</h1>
@@ -40,11 +38,9 @@ export default function TemperatureChart(props) {
     );
   }
 
-  let temps = transFormTemperatureData(
-    connectionContext.stateDescription.tempData
-  );
+  let temps = transFormTemperatureData(tempData);
 
-  let lines = getLines(connectionContext.stateDescription.tempData[0]);
+  let lines = getLines(tempData);
 
   return (
     <ResponsiveContainer height="100%" width="100%">
@@ -68,6 +64,7 @@ export default function TemperatureChart(props) {
     if (!data) {
       return lines;
     }
+    data = data[0];
 
     if (data.tools.length == 1) {
       lines.push(

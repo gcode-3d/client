@@ -2,7 +2,13 @@ import {
   socketEventConnectionOpen,
   socketEventConnectionClose,
   socketEventReady,
-} from "./actions";
+} from "../actions/socket";
+
+import { stateUpdate } from "../actions/state";
+
+import { temperatureChange } from "../actions/temperature";
+
+import { terminalMessageReceive } from "../actions/terminal";
 
 const websocketMiddleware = () => {
   let socket = null;
@@ -24,7 +30,24 @@ const websocketMiddleware = () => {
 
     switch (eventName) {
       case "ready":
-        store.dispatch(socketEventReady(eventBody.user, eventBody.state));
+        store.dispatch(
+          socketEventReady(
+            eventBody.user,
+            eventBody.state,
+            eventBody.description
+          )
+        );
+        break;
+      case "temperature_change":
+        store.dispatch(temperatureChange(eventBody));
+        break;
+      case "state_update":
+        store.dispatch(stateUpdate(eventBody.state, eventBody.description));
+        break;
+      case "terminal_message":
+        eventBody.forEach((message) => {
+          store.dispatch(terminalMessageReceive(message));
+        });
         break;
       default:
         console.log("Unknown type " + payload.type, payload);

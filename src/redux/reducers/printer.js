@@ -3,9 +3,15 @@ export default function printerStateReducer(state = {}, action) {
     case "socket/event/server/ready":
       return {
         state: action.printerState,
+        stateDescription: action.printerStateDescription,
       };
     case "socket/event/builtin/close":
       return {};
+    case "socket/event/server/stateUpdate":
+      return {
+        state: action.state,
+        stateDescription: action.stateDescription,
+      };
   }
 
   return state;

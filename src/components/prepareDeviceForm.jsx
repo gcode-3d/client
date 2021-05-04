@@ -1,5 +1,4 @@
 import { faExclamationTriangle } from "@fortawesome/pro-solid-svg-icons";
-import { faInfoCircle } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import GETURL from "../tools/geturl.js";

@@ -9,13 +9,18 @@ export const socketEventConnectionOpen = () => ({
 });
 
 export const socketEventConnectionClose = () => ({
-  type: "socket/event/builtin/open",
+  type: "socket/event/builtin/close",
 });
 
-export const socketEventReady = (user, printerState) => ({
+export const socketEventReady = (
+  user,
+  printerState,
+  printerStateDescription
+) => ({
   type: "socket/event/server/ready",
   user,
   printerState,
+  printerStateDescription,
 });
 
 export function setCurrentUser(username, permissions) {

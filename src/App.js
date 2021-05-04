@@ -1,7 +1,7 @@
 import React, { useEffect, Suspense } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { socketConnect } from "./redux/actions";
+import { socketConnect } from "./redux/actions/socket";
 
 import LoginScreen from "./pages/login";
 import PageManager from "./components/pageManager";
@@ -38,7 +38,7 @@ export default function App() {
   }
 
   // If no token found, go to the login window.
-  if (!getToken()) {
+  if (!user.token) {
     return <LoginScreen callback={handleLogin} />;
   }
   // If no printerstate is set yet, There hasn't been any connection yet.

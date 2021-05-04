@@ -1,33 +1,35 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import Terminal, { ColorMode, LineType } from "react-terminal-ui";
-import ConnectionContext from "../components/connectionContext";
 import PageContainer from "../components/pageContainer";
 import "../styles/terminal.css";
-import emitter from "../tools/emitter";
 import GETURL from "../tools/geturl";
 
 export default function TerminalPage() {
   const [sentMessages, setSentMessages] = useState([]);
-  let context = useContext(ConnectionContext);
+  const terminalData = useSelector((state) => state.terminal);
+  const user = useSelector((state) => state.user);
+  const printerInfo = useSelector((state) => state.printer);
 
   useEffect(() => {
-    emitter.on("terminal.receive", receiveMessageHandler);
-    return () => {
-      emitter.removeListener("terminal.receive", receiveMessageHandler);
-    };
-  }, []);
+    receiveMessageHandler();
+  }, [terminalData]);
 
-  function receiveMessageHandler(content) {
-    setSentMessages(sentMessages.filter((i) => i.id == content.id));
-  }
-
-  if (!context.terminalData) {
-    return null;
+  function receiveMessageHandler() {
+    setSentMessages(
+      sentMessages.filter((message) => {
+        return !terminalData.map((i) => i.id).includes(message.id);
+      })
+    );
   }
   let lineData = [];
 
-  context.terminalData.forEach((i) => {
-    i.data.split("\n").forEach((line) => {
+  if (!terminalData) {
+    return null;
+  }
+
+  terminalData.forEach((i) => {
+    i.message.split("\n").forEach((line) => {
       lineData.push({
         value:
           i.amount > 1 ? (
@@ -44,10 +46,10 @@ export default function TerminalPage() {
   });
 
   let hasPermissionToSend =
-    context.user.permissions["admin"] == true ||
-    context.user.permissions["terminal.send"] === true;
+    user.permissions["admin"] == true ||
+    user.permissions["terminal.send"] === true;
 
-  if (context.state != "Connected") {
+  if (printerInfo.state != "Connected") {
     hasPermissionToSend = false;
   }
   let sentMessageBlock = null;
@@ -110,9 +112,7 @@ export default function TerminalPage() {
           return console.error(json.message);
         }
         let id = json.messageId;
-        if (
-          context.terminalData.filter((message) => message.id == id).length > 0
-        ) {
+        if (terminalData.filter((message) => message.id == id).length > 0) {
           return;
         }
         setSentMessages([

@@ -1,4 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+
 import "../styles/statusbar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,7 +15,6 @@ import {
 } from "@fortawesome/pro-regular-svg-icons";
 import { faSlash, faFile } from "@fortawesome/pro-solid-svg-icons";
 import { faCircle, faHourglassEnd } from "@fortawesome/pro-duotone-svg-icons";
-import ConnectionContext from "./connectionContext";
 import StatusBarItem from "./statusbarItem";
 import { Link } from "react-router-dom";
 import ConnectionStatusActionButtons from "./connectionStatusActionButtons";
@@ -21,11 +22,13 @@ import { DateTime } from "luxon";
 
 export default function StatusBar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const connectionContext = useContext(ConnectionContext);
+  const user = useSelector((state) => state.user);
+  const printerInfo = useSelector((state) => state.printer);
+  const tempData = useSelector((state) => state.tempData);
   const userContent = (
     <StatusBarItem
       icon={<FontAwesomeIcon icon={faUser} />}
-      title={connectionContext.user.username}
+      title={user.username}
     >
       <a onClick={logout} className="navbar-item">
         Logout
@@ -58,11 +61,12 @@ export default function StatusBar() {
       <div className={"navbar-menu " + (menuOpen ? "is-active" : "")}>
         <div className="navbar-end">
           {getStateItem(
-            connectionContext.state,
-            connectionContext.stateDescription,
-            connectionContext.user
+            printerInfo.state,
+            printerInfo.stateDescription,
+            user,
+            tempData
           )}
-          {connectionContext.user == null ? null : userContent}
+          {user == null ? null : userContent}
         </div>
       </div>
     </nav>
@@ -74,7 +78,7 @@ function logout() {
   sessionStorage.removeItem("auth");
   window.location.reload();
 }
-function getStateItem(state, description, user) {
+function getStateItem(state, description, user, tempData) {
   let icon;
   switch (state) {
     case "Disconnected":
@@ -92,11 +96,7 @@ function getStateItem(state, description, user) {
       );
     case "Connected":
       icon = <FontAwesomeIcon icon={faCircle} color="#2aba2a" />;
-      if (
-        !description ||
-        !description.tempData ||
-        description.tempData.length == 0
-      ) {
+      if (!description || !tempData || tempData.length == 0) {
         return (
           <StatusBarItem icon={icon} title={"Printer connected"}>
             <ConnectionStatusActionButtons state={state} user={user} />
@@ -117,11 +117,7 @@ function getStateItem(state, description, user) {
     case "Printing":
       icon = <FontAwesomeIcon icon={faPrint} />;
 
-      if (
-        !description ||
-        !description.tempData ||
-        description.tempData.length == 0
-      ) {
+      if (!description || !tempData || tempData.length == 0) {
         return (
           <StatusBarItem icon={icon} title={"Printing"}>
             <ConnectionStatusActionButtons state={state} user={user} />
@@ -164,7 +160,7 @@ function getStateItem(state, description, user) {
   }
   function getTempComponents() {
     let tempComponents = [];
-    let temp = description.tempData[description.tempData.length - 1];
+    let temp = tempData[tempData.length - 1];
     if (temp.tools.length == 1) {
       if (temp.tools[0].targetTemp != 0) {
         tempComponents.push(

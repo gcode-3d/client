@@ -1,4 +1,11 @@
-export default function userReducer(state = {}, action) {
+import getToken from "../../tools/getToken";
+
+export default function userReducer(
+  state = {
+    token: getToken(),
+  },
+  action
+) {
   switch (action.type) {
     case "socket/event/server/ready":
       return {

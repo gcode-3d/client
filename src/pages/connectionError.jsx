@@ -1,3 +1,5 @@
+// TODO: Rebrand page to connecting page
+
 import { faSpinnerThird } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";

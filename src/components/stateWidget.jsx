@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import ConnectionContext from "./connectionContext";
+import React, { useprinterInfo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBug,
@@ -11,50 +10,50 @@ import { faCircle, faWifi } from "@fortawesome/pro-duotone-svg-icons";
 import "../styles/stateWidget.css";
 import PrintStatusWidget from "./printStatusWidget";
 import getURL from "../tools/geturl";
+import { useSelector } from "react-redux";
 
 export default function StateWidget() {
-  let context = useContext(ConnectionContext);
+  let printerInfo = useSelector((state) => state.printer);
+  const tempData = useSelector((state) => state.tempData);
   let printInfo = null;
   if (
-    context.state == "Printing" &&
-    context.stateDescription != null &&
-    context.stateDescription.printInfo != null
+    printerInfo.state == "Printing" &&
+    printerInfo.stateDescription != null &&
+    printerInfo.stateDescription.printInfo != null
   ) {
     let diff =
-      new Date(context.stateDescription.printInfo.estEndTime || 0).getTime() -
-      new Date(context.stateDescription.printInfo.startTime).getTime();
+      new Date(
+        printerInfo.stateDescription.printInfo.estEndTime || 0
+      ).getTime() -
+      new Date(printerInfo.stateDescription.printInfo.startTime).getTime();
     printInfo = {
-      printTime: !context.stateDescription.printInfo.estEndTime ? 0 : diff,
-      startTime: context.stateDescription.printInfo.startTime,
-      progress: context.stateDescription.printInfo.progress,
-      tempInfo:
-        context.stateDescription.tempData != null
-          ? context.stateDescription.tempData[
-              context.stateDescription.tempData.length - 1
-            ]
-          : null,
+      printTime: !printerInfo.stateDescription.printInfo.estEndTime ? 0 : diff,
+      startTime: printerInfo.stateDescription.printInfo.startTime,
+      progress: printerInfo.stateDescription.printInfo.progress,
+      tempInfo: tempData != null ? tempData[tempData.length - 1] : null,
     };
   }
   return (
     <div className="columns status-widget">
       <StatusColumn
         printerName={"harry"}
-        state={context.state}
-        stateDescription={context.stateDescription}
+        state={printerInfo.state}
+        stateDescription={printerInfo.stateDescription}
       />
       <QuickActions
-        state={context.state}
-        stateDescription={context.stateDescription}
+        state={printerInfo.state}
+        stateDescription={printerInfo.stateDescription}
       />
       <div className="column is-narrow">
-        {context.state == "Printing" && context.stateDescription.printInfo && (
-          <PrintStatusWidget
-            printTime={printInfo.printTime}
-            startTime={new Date(printInfo.startTime)}
-            progress={printInfo.progress}
-            tempInfo={printInfo.tempInfo}
-          />
-        )}
+        {printerInfo.state == "Printing" &&
+          printerInfo.stateDescription.printInfo && (
+            <PrintStatusWidget
+              printTime={printInfo.printTime}
+              startTime={new Date(printInfo.startTime)}
+              progress={printInfo.progress}
+              tempInfo={printInfo.tempInfo}
+            />
+          )}
       </div>
     </div>
   );

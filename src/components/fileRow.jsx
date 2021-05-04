@@ -10,15 +10,17 @@ import {
   faTrashAlt,
 } from "@fortawesome/pro-regular-svg-icons";
 import FileRowActionButton from "./fileRowActionButton";
-import emitter from "../tools/emitter";
+import { useSelector } from "react-redux";
 
 export default function FileRow({
   file,
-  context,
   reloadPage,
   setSelectedPrint,
   ...props
 }) {
+  const printerInfo = useSelector((state) => state.printer);
+  const user = useSelector((state) => state.user);
+
   return (
     <tr>
       <td title={file.name}>{file.name}</td>
@@ -41,11 +43,8 @@ export default function FileRow({
         <FontAwesomeIcon icon={faDownload} />
       </FileRowActionButton>,
     ];
-    if (
-      context.user.permissions["admin"] ||
-      context.user.permissions["print_state.edit"]
-    ) {
-      if (context.state == "Connected") {
+    if (user.permissions["admin"] || user.permissions["print_state.edit"]) {
+      if (printerInfo.state == "Connected") {
         actions.push(
           <FileRowActionButton
             title={
@@ -82,23 +81,20 @@ export default function FileRow({
         );
       }
     }
-    if (
-      context.user.permissions["admin"] ||
-      context.user.permissions["file.edit"]
-    ) {
+    if (user.permissions["admin"] || user.permissions["file.edit"]) {
       actions.push(
         <FileRowActionButton
           title={
-            context.state == "Printing"
-              ? file.name == context.stateDescription.printInfo.file.name
+            printerInfo.state == "Printing"
+              ? file.name == printerInfo.stateDescription.printInfo.file.name
                 ? "Cannot rename " + file.name + ". It's currently printing."
                 : "Rename " + file.name
               : "Rename " + file.name
           }
           key="edit"
           disabled={
-            context.state == "Printing"
-              ? file.name == context.stateDescription.printInfo.file.name
+            printerInfo.state == "Printing"
+              ? file.name == printerInfo.stateDescription.printInfo.file.name
                 ? true
                 : false
               : false
@@ -112,8 +108,8 @@ export default function FileRow({
       actions.push(
         <FileRowActionButton
           title={
-            context.state == "Printing"
-              ? file.name == context.stateDescription.printInfo.file.name
+            printerInfo.state == "Printing"
+              ? file.name == printerInfo.stateDescription.printInfo.file.name
                 ? "Cannot delete " + file.name + ". It's currently printing."
                 : "Delete " + file.name
               : "Delete " + file.name
@@ -121,8 +117,8 @@ export default function FileRow({
           key="delete"
           color="danger"
           disabled={
-            context.state == "Printing"
-              ? file.name == context.stateDescription.printInfo.file.name
+            printerInfo.state == "Printing"
+              ? file.name == printerInfo.stateDescription.printInfo.file.name
                 ? true
                 : false
               : false

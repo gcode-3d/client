@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/filePage.css";
 import PageContainer from "../components/pageContainer";
 import getURL from "../tools/geturl";
@@ -10,12 +10,12 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 import { faPlusCircle, faSync } from "@fortawesome/pro-regular-svg-icons";
 
-import ConnectionContext from "../components/connectionContext";
 import ActionBar from "../components/actionBar";
 import BoxModal from "../components/boxModal";
 import FileUpload from "./fileUpload";
 import FileRow from "../components/fileRow";
-
+import { useSelector, useDispatch } from "react-redux";
+import { sendStartPrintAction } from "../redux/actions/file";
 const directions = {
   NEUTRAL: 0,
   UP: 1,
@@ -23,7 +23,9 @@ const directions = {
 };
 
 export default function FilePage() {
-  const connectionContext = useContext(ConnectionContext);
+  const printerInfo = useSelector((state) => state.printer);
+  const dispatch = useDispatch();
+
   const [loading, setLoading] = useState(false);
   const [selectedPrint, setSelectedPrint] = useState(null);
   const [files, setFiles] = useState([]);
@@ -41,7 +43,7 @@ export default function FilePage() {
 
   useEffect(() => {
     setSelectedPrint(null);
-  }, [connectionContext.state]);
+  }, [printerInfo]);
 
   function reloadFiles() {
     if (loading) {
@@ -162,8 +164,8 @@ export default function FilePage() {
             .map((file) => {
               return (
                 <FileRow
+                  printerInfo={printerInfo}
                   reloadPage={reloadFiles}
-                  context={connectionContext}
                   file={file}
                   print_disabled={selectedPrint != null}
                   print_loading={
@@ -171,34 +173,7 @@ export default function FilePage() {
                   }
                   setSelectedPrint={() => {
                     setSelectedPrint(file.name);
-                    let headers = new Headers();
-                    headers.append(
-                      "Authorization",
-                      "auth-" +
-                        (localStorage.getItem("auth") ||
-                          sessionStorage.getItem("auth"))
-                    );
-                    headers.append("content-type", "application/json");
-
-                    var requestOptions = {
-                      method: "PUT",
-                      body: JSON.stringify({ printName: file.name }),
-                      headers: headers,
-                    };
-
-                    fetch(getURL() + "/api/print", requestOptions)
-                      .then((response) => {
-                        if (!response.ok) {
-                          setSelectedPrint(null);
-                          console.error(
-                            `Couldn't start print. Status received: ${response.status} `
-                          );
-                        }
-                      })
-                      .catch((error) => {
-                        console.log("error", error);
-                        setSelectedPrint(null);
-                      });
+                    dispatch(sendStartPrintAction(file.name));
                   }}
                   key={file.name}
                 />
