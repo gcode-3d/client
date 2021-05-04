@@ -13,13 +13,16 @@
     "@fortawesome/pro-regular-svg-icons": "^5.15.2",
     "@fortawesome/pro-solid-svg-icons": "^5.15.2",
     "@fortawesome/react-fontawesome": "^0.1.14",
+    "@reduxjs/toolkit": "^1.5.1",
     "bulma": "^0.9.2",
     "luxon": "^1.26.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "react-terminal-ui": "^0.1.10",
-    "recharts": "^2.0.8"
+    "recharts": "^2.0.8",
+    "redux": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.1",

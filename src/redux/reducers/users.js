@@ -1,0 +1,20 @@
+export default function userReducer(state = {}, action) {
+  switch (action.type) {
+    case "socket/event/server/ready":
+      return {
+        ...state,
+        username: action.user.username,
+        permissions: action.user.permissions,
+      };
+
+    case "socket/connectUsingToken":
+      return {
+        ...state,
+        token: action.token,
+      };
+    case "socket/event/builtin/close":
+      return {};
+  }
+
+  return state;
+}
