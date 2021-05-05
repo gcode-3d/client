@@ -6,8 +6,7 @@ import { socketConnect } from "./redux/actions/socket";
 import LoginScreen from "./pages/login";
 import PageManager from "./components/pageManager";
 import ErrorBoundary from "./components/errorBoundary.jsx";
-
-import getToken from "./tools/getToken";
+import LoadingPage from "./pages/loading";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -21,15 +20,14 @@ export default function App() {
   useEffect(handleLogin, []);
 
   function handleLogin() {
-    var token = getToken();
-    if (token) {
+    if (user.token) {
       let url =
         process.env.NODE_ENV === "production"
           ? window.location.protocol === "https:"
             ? "wss://" + window.location.host + "/ws"
             : "ws://" + window.location.host + "/ws"
           : "ws://localhost:8000/ws";
-      dispatch(socketConnect(url, "auth-" + token));
+      dispatch(socketConnect(url, user.token));
     }
 
     return () => {
@@ -43,12 +41,12 @@ export default function App() {
   }
   // If no printerstate is set yet, There hasn't been any connection yet.
   if (!printerState) {
-    // TODO: Add loading widget
-    return <h1>Loading</h1>;
+    return <LoadingPage />;
   }
+
   return (
     <ErrorBoundary>
-      <Suspense fallback={<h1>Loading</h1>}>
+      <Suspense fallback={<LoadingPage />}>
         <PageManager />
       </Suspense>
     </ErrorBoundary>
