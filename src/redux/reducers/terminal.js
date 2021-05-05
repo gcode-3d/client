@@ -1,5 +1,5 @@
 let initialState = [];
-if (!sessionStorage.getItem("terminalCache")) {
+if (sessionStorage.getItem("terminalCache")) {
   try {
     initialState = JSON.parse(sessionStorage.getItem("terminalCache"));
     // initialState.push({message: "Started new session at xx xx"})

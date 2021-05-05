@@ -24,10 +24,6 @@ export default function TerminalPage() {
   }
   let lineData = [];
 
-  if (!terminalData) {
-    return null;
-  }
-
   terminalData.forEach((i) => {
     i.message.split("\n").forEach((line) => {
       lineData.push({

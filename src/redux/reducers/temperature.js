@@ -1,5 +1,5 @@
 let initialState = [];
-if (!sessionStorage.getItem("temp")) {
+if (sessionStorage.getItem("temp")) {
   try {
     initialState = JSON.parse(sessionStorage.getItem("temp"));
   } catch (e) {
