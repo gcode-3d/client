@@ -27,9 +27,7 @@ export default function PageManager(props) {
         <Route path="/notifications">
           <ErrorBoundary>
             <Suspense>
-              <Suspense>
-                <NotificationPage />
-              </Suspense>
+              <NotificationPage />
             </Suspense>
           </ErrorBoundary>
         </Route>
