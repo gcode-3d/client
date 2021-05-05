@@ -2,7 +2,7 @@ import getToken from "../../tools/getToken";
 
 export default function userReducer(
   state = {
-    token: getToken(),
+    token: getToken() ? "auth-" + getToken() : null,
   },
   action
 ) {
