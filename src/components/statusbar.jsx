@@ -14,7 +14,11 @@ import {
   faUser,
 } from "@fortawesome/pro-regular-svg-icons";
 import { faSlash, faFile } from "@fortawesome/pro-solid-svg-icons";
-import { faCircle, faHourglassEnd } from "@fortawesome/pro-duotone-svg-icons";
+import {
+  faCircle,
+  faHourglassEnd,
+  faSync,
+} from "@fortawesome/pro-duotone-svg-icons";
 import StatusBarItem from "./statusbarItem";
 import { Link } from "react-router-dom";
 import ConnectionStatusActionButtons from "./connectionStatusActionButtons";
@@ -96,7 +100,7 @@ function getStateItem(state, description, user, tempData) {
       );
     case "Connected":
       icon = <FontAwesomeIcon icon={faCircle} color="#2aba2a" />;
-      if (!description || !tempData || tempData.length == 0) {
+      if (!tempData || tempData.length == 0) {
         return (
           <StatusBarItem icon={icon} title={"Printer connected"}>
             <ConnectionStatusActionButtons state={state} user={user} />
@@ -145,6 +149,16 @@ function getStateItem(state, description, user, tempData) {
           <ConnectionStatusActionButtons state={state} user={user} />
         </StatusBarItem>
       );
+
+    case "Connecting":
+      icon = <FontAwesomeIcon icon={faSync} spin={true} color="#2aba2a" />;
+      return (
+        <StatusBarItem icon={icon} title="Connecting.">
+          <div className="navbar-item">Attempting to connect..</div>
+          <ConnectionStatusActionButtons state={state} user={user} />
+        </StatusBarItem>
+      );
+
     default:
       icon = <FontAwesomeIcon icon={faBug} color="#2aba2a" />;
       return (

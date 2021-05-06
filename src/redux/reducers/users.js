@@ -20,7 +20,9 @@ export default function userReducer(
         token: action.token,
       };
     case "socket/event/builtin/close":
-      return {};
+      return {
+        token: state.token,
+      };
   }
 
   return state;

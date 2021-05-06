@@ -12,6 +12,11 @@ export default function printerStateReducer(state = {}, action) {
         state: action.state,
         stateDescription: action.stateDescription,
       };
+    case "api/connectPrinter":
+      return {
+        state: "Connecting",
+        stateDescription: null,
+      };
   }
 
   return state;

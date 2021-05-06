@@ -3,3 +3,15 @@ export const stateUpdate = (state, stateDescription) => ({
   state,
   stateDescription,
 });
+
+export const connect = () => ({
+  type: "api/connectPrinter",
+});
+
+export const reconnect = () => ({
+  type: "api/reconnectPrinter",
+});
+
+export const disconnect = () => ({
+  type: "api/disconnectPrinter",
+});

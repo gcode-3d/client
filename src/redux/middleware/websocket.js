@@ -1,14 +1,16 @@
 import {
+  socketConnect,
   socketEventConnectionOpen,
   socketEventConnectionClose,
   socketEventReady,
 } from "../actions/socket";
 
 import { stateUpdate } from "../actions/state";
-
 import { temperatureChange } from "../actions/temperature";
-
 import { terminalMessageReceive } from "../actions/terminal";
+import { notificationMessageReceive } from "../actions/notification";
+
+let timeout;
 
 const websocketMiddleware = () => {
   let socket = null;
@@ -18,8 +20,7 @@ const websocketMiddleware = () => {
     store.dispatch(socketEventConnectionOpen());
   };
 
-  const onClose = (store) => (event) => {
-    console.log("websocket closed");
+  const onClose = (store) => () => {
     store.dispatch(socketEventConnectionClose());
   };
 
@@ -49,6 +50,9 @@ const websocketMiddleware = () => {
           store.dispatch(terminalMessageReceive(message));
         });
         break;
+      case "notification":
+        store.dispatch(notificationMessageReceive(eventBody));
+        break;
       default:
         console.log("Unknown type " + payload.type, payload);
         break;
@@ -73,8 +77,25 @@ const websocketMiddleware = () => {
           socket.close();
         }
         socket.null;
-
+        if (timeout != null) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
         break;
+      case "socket/event/builtin/close":
+        if (timeout != null) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+        timeout = setTimeout(() => {
+          let url =
+            process.env.NODE_ENV === "production"
+              ? window.location.protocol === "https:"
+                ? "wss://" + window.location.host + "/ws"
+                : "ws://" + window.location.host + "/ws"
+              : "ws://localhost:8000/ws";
+          store.dispatch(socketConnect(url, store.getState().user.token));
+        }, 5000);
     }
     return next(action);
   };
