@@ -1,4 +1,5 @@
 import getURL from "../../tools/geturl";
+import { settingsLoaded } from "../actions/settings";
 const apiMiddleWare = () => {
   return (store) => (next) => (action) => {
     switch (action.type) {
@@ -114,6 +115,31 @@ const apiMiddleWare = () => {
             console.log("error", error);
           });
         break;
+      case "socket/event/server/ready":
+        getRequest(getURL() + "/api/settings/", {
+          Authorization:
+            "auth-" +
+            (localStorage.getItem("auth") || sessionStorage.getItem("auth")),
+        })
+          .then(async (response) => {
+            if (!response.ok) {
+              // TODO, logout and show login page, as we cannot trust data is correct.
+              console.error(
+                `Couldn't fetch/store notifications. Status received: ${response.status} `
+              );
+            } else {
+              try {
+                let json = await response.json();
+                store.dispatch(settingsLoaded(json));
+              } catch (e) {
+                console.error(e);
+                // TODO, logout and show login page, as we cannot trust data is correct.
+              }
+            }
+          })
+          .catch((error) => {
+            console.log("error", error);
+          });
     }
     return next(action);
   };

@@ -16,6 +16,11 @@ export default function App() {
   const printerState = useSelector((state) => {
     return state.printer.state;
   });
+  const loadedSettings = useSelector((state) => {
+    return state.settings;
+  });
+
+  console.log(loadedSettings);
 
   useEffect(handleLogin, []);
 
@@ -40,7 +45,7 @@ export default function App() {
     return <LoginScreen callback={handleLogin} />;
   }
   // If no printerstate is set yet, There hasn't been any connection yet.
-  if (!printerState) {
+  if (!printerState || !loadedSettings) {
     return <LoadingPage />;
   }
 

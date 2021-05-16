@@ -5,6 +5,7 @@ import user from "./reducers/users";
 import tempData from "./reducers/temperature";
 import terminal from "./reducers/terminal";
 import notifications from "./reducers/notifications";
+import settings from "./reducers/settings";
 
 import websocketMiddleware from "./middleware/websocket";
 import tempMiddleWare from "./middleware/temperature";
@@ -19,6 +20,7 @@ const store = configureStore({
     tempData,
     terminal,
     notifications,
+    settings,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
