@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
 import "../styles/notifications.scss";
 import PageContainer from "../components/pageContainer";

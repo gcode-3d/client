@@ -13,13 +13,12 @@ import {
   faBell as faBellSelected,
 } from "@fortawesome/pro-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext } from "react";
-import ConnectionContext from "./connectionContext";
+import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function StatusBar(props) {
-  const connectionContext = useContext(ConnectionContext);
-  const permissions = connectionContext.user.permissions;
+  const permissions = useSelector((state) => state.user.permissions);
   let allowedEntries = [];
 
   if (

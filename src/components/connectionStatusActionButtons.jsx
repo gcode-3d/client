@@ -6,10 +6,18 @@ import {
 } from "@fortawesome/pro-regular-svg-icons";
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import getURL from "../tools/geturl";
+
+import {
+  connect as connectAction,
+  reconnect as reconnectAction,
+  disconnect as disconnectAction,
+} from "../redux/actions/state";
+import { cancelPrintAction } from "../redux/actions/file";
+import { useDispatch } from "react-redux";
 
 export default function ConnectionStatusActionButtons(props) {
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   useEffect(() => {
     return () => {
       setLoading(false);
@@ -112,43 +120,33 @@ export default function ConnectionStatusActionButtons(props) {
           </div>
         </div>
       );
+    case "Connecting":
+      return (
+        <div className="connectionStatusActionButton">
+          <div className="buttons is-centered">
+            <button
+              title="Connect Device"
+              disabled={true}
+              className={"button is-success is-loading"}
+            >
+              <FontAwesomeIcon icon={faLink} /> Connect printer
+            </button>
+          </div>
+        </div>
+      );
     default:
       return null;
   }
   function cancelPrint() {
-    sendCommand("/api/print/", "DELETE");
+    dispatch(cancelPrintAction());
   }
   function connect() {
-    sendCommand("/api/connection", "PUT");
+    dispatch(connectAction());
   }
   function disconnect() {
-    sendCommand("/api/connection", "DELETE");
+    dispatch(disconnectAction());
   }
   function reconnect() {
-    sendCommand("/api/connection", "POST");
-  }
-  function sendCommand(url, method) {
-    setLoading(true);
-    let headers = new Headers();
-    headers.append(
-      "Authorization",
-      "auth-" + (localStorage.getItem("auth") || sessionStorage.getItem("auth"))
-    );
-
-    var requestOptions = {
-      method: method,
-      headers: headers,
-    };
-
-    fetch(getURL() + url, requestOptions)
-      .then((response) => {
-        if (response.ok) {
-          return setLoading(false);
-        }
-        console.error(
-          `Couldn't update connection. status received: ${response.status} - method used: ${method}`
-        );
-      })
-      .catch((error) => console.log("error", error));
+    dispatch(reconnectAction());
   }
 }

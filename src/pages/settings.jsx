@@ -52,6 +52,12 @@ let settingInfo = {
     name: "Printer has heated Chamber",
     description: "Enable this if your printer has installed a heated chamber",
   },
+  N_clientTerminalAmount: {
+    name: "Terminal amount",
+    description:
+      "How many messages should the page store in memory while opened?",
+    example: "Around 400 recommended, more messages means more memory usage.",
+  },
 };
 
 export default function SettingsPage() {

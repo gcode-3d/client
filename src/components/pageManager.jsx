@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from "react";
+import { useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import ConnectionContext from "./connectionContext.jsx";
 import ErrorBoundary from "./errorBoundary.jsx";
 import PrivateRoute from "./privateRoute";
 
@@ -12,25 +12,14 @@ const FilePage = lazy(() => import("../pages/file"));
 const NotificationPage = lazy(() => import("../pages/notifications"));
 
 export default function PageManager(props) {
+  const user = useSelector((state) => state.user);
   return (
     <Router>
       <Switch>
         <Route path="/" exact>
           <ErrorBoundary>
             <Suspense>
-              <ConnectionContext.Provider
-                value={{
-                  state: props.state.state,
-                  stateDescription: props.state.description,
-                  terminalData: props.terminalData || [],
-                  user: {
-                    username: props.user.username,
-                    permissions: props.user.permissions,
-                  },
-                }}
-              >
-                <Home />
-              </ConnectionContext.Provider>
+              <Home />
             </Suspense>
           </ErrorBoundary>
         </Route>
@@ -38,19 +27,7 @@ export default function PageManager(props) {
         <Route path="/notifications">
           <ErrorBoundary>
             <Suspense>
-              <ConnectionContext.Provider
-                value={{
-                  state: props.state.state,
-                  stateDescription: props.state.description,
-                  terminalData: props.terminalData || [],
-                  user: {
-                    username: props.user.username,
-                    permissions: props.user.permissions,
-                  },
-                }}
-              >
-                <NotificationPage />
-              </ConnectionContext.Provider>
+              <NotificationPage />
             </Suspense>
           </ErrorBoundary>
         </Route>
@@ -58,93 +35,44 @@ export default function PageManager(props) {
         <PrivateRoute
           path="/settings"
           authed={
-            props.user.permissions["admin"] ||
-            props.user.permissions["settings.edit"]
+            user.permissions["admin"] || user.permissions["settings.edit"]
           }
         >
-          <ConnectionContext.Provider
-            value={{
-              state: props.state.state,
-              stateDescription: props.state.description,
-              terminalData: props.terminalData || [],
-              user: {
-                username: props.user.username,
-                permissions: props.user.permissions,
-              },
-            }}
-          >
-            <Suspense>
-              <SettingPage />
-            </Suspense>
-          </ConnectionContext.Provider>
+          <Suspense>
+            <SettingPage />
+          </Suspense>
         </PrivateRoute>
 
         <PrivateRoute
           path="/terminal"
           authed={
-            props.user.permissions["admin"] ||
-            props.user.permissions["terminal.watch"] ||
-            props.user.permissions["terminal.send"]
+            user.permissions["admin"] ||
+            user.permissions["terminal.watch"] ||
+            user.permissions["terminal.send"]
           }
         >
-          <ConnectionContext.Provider
-            value={{
-              state: props.state.state,
-              stateDescription: props.state.description,
-              terminalData: props.terminalData || [],
-              user: {
-                username: props.user.username,
-                permissions: props.user.permissions,
-              },
-            }}
-          >
-            <Suspense>
-              <TerminalPage />
-            </Suspense>
-          </ConnectionContext.Provider>
+          <Suspense>
+            <TerminalPage />
+          </Suspense>
         </PrivateRoute>
 
         <PrivateRoute
           path="/files"
           authed={
-            props.user.permissions["admin"] ||
-            props.user.permissions["file.access"] ||
-            props.user.permissions["file.edit"]
+            user.permissions["admin"] ||
+            user.permissions["file.access"] ||
+            user.permissions["file.edit"]
           }
         >
-          <ConnectionContext.Provider
-            value={{
-              state: props.state.state,
-              stateDescription: props.state.description,
-              terminalData: props.terminalData || [],
-              user: {
-                username: props.user.username,
-                permissions: props.user.permissions,
-              },
-            }}
-          >
-            <Suspense>
-              <FilePage />
-            </Suspense>
-          </ConnectionContext.Provider>
+          <Suspense>
+            <FilePage />
+          </Suspense>
         </PrivateRoute>
 
         <Route>
-          <ConnectionContext.Provider
-            value={{
-              state: props.state.state,
-              stateDescription: props.state.description,
-              terminalData: props.terminalData || [],
-              user: {
-                username: props.user.username,
-                permissions: props.user.permissions,
-              },
-            }}
-          >
-            <Suspense>
-              <UnknownPage />
-            </Suspense>
-          </ConnectionContext.Provider>
+          <Suspense>
+            <UnknownPage />
+          </Suspense>
         </Route>
       </Switch>
     </Router>
