@@ -35,7 +35,7 @@ const apiMiddleWare = () => {
             if (!response.ok) {
               // TODO: Add status message dispatch
               console.error(
-                `Couldn't start print. Status received: ${response.status} `
+                `Couldn't connect printer. Status received: ${response.status} `
               );
             }
           })
@@ -53,7 +53,25 @@ const apiMiddleWare = () => {
             if (!response.ok) {
               // TODO: Add status message dispatch
               console.error(
-                `Couldn't start print. Status received: ${response.status} `
+                `Couldn't reconnect printer. Status received: ${response.status} `
+              );
+            }
+          })
+          .catch((error) => {
+            console.log("error", error);
+          });
+        break;
+      case "api/cancelPrint":
+        DELETERequest(getURL() + "/api/print", {
+          Authorization:
+            "auth-" +
+            (localStorage.getItem("auth") || sessionStorage.getItem("auth")),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // TODO: Add status message dispatch
+              console.error(
+                `Couldn't cancel print. Status received: ${response.status} `
               );
             }
           })
@@ -63,6 +81,23 @@ const apiMiddleWare = () => {
         break;
       case "api/disconnectPrinter":
         DELETERequest(getURL() + "/api/connection", {
+          Authorization:
+            "auth-" +
+            (localStorage.getItem("auth") || sessionStorage.getItem("auth")),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              // TODO: Add status message dispatch
+              console.error(
+                `Couldn't start print. Status received: ${response.status} `
+              );
+            }
+          })
+          .catch((error) => {
+            console.log("error", error);
+          });
+      case "api/emergency":
+        POSTRequest(getURL() + "/api/connection/emergency/", {
           Authorization:
             "auth-" +
             (localStorage.getItem("auth") || sessionStorage.getItem("auth")),

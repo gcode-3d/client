@@ -10,11 +10,19 @@ import { faCircle, faWifi } from "@fortawesome/pro-duotone-svg-icons";
 import "../styles/stateWidget.css";
 import PrintStatusWidget from "./printStatusWidget";
 import getURL from "../tools/geturl";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { cancelPrintAction } from "../redux/actions/file";
+import {
+  connect as connectAction,
+  disconnect as disconnectAction,
+  reconnect as reconnectAction,
+  emergency as emergencyAction,
+} from "../redux/actions/state";
 
 export default function StateWidget() {
   let printerInfo = useSelector((state) => state.printer);
   const tempData = useSelector((state) => state.tempData);
+
   let printInfo = null;
   if (
     printerInfo.state == "Printing" &&
@@ -141,6 +149,7 @@ function StatusColumn(props) {
 }
 
 function QuickActions({ state }) {
+  const dispatch = useDispatch();
   let actions = [];
 
   let connectButton = (
@@ -203,19 +212,19 @@ function QuickActions({ state }) {
     </div>
   );
   function connect() {
-    sendCommand("/api/connection/", "PUT");
+    dispatch(connectAction());
   }
   function disconnect() {
-    sendCommand("/api/connection/", "DELETE");
+    dispatch(disconnectAction());
   }
   function reconnect() {
-    sendCommand("/api/connection/", "POST");
+    dispatch(reconnectAction());
   }
   function emergency() {
-    sendCommand("/api/connection/emergency/", "POST");
+    dispatch(emergencyAction());
   }
   function cancel() {
-    sendCommand("/api/print/", "DELETE");
+    dispatch(cancelPrintAction);
   }
   function sendCommand(url, method) {
     let headers = new Headers();

@@ -15,3 +15,7 @@ export const reconnect = () => ({
 export const disconnect = () => ({
   type: "api/disconnectPrinter",
 });
+
+export const emergency = () => ({
+  type: "api/emergency",
+});
