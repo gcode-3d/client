@@ -20,8 +20,6 @@ export default function App() {
     return state.settings;
   });
 
-  console.log(loadedSettings);
-
   useEffect(handleLogin, []);
 
   function handleLogin() {

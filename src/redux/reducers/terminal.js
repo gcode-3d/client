@@ -7,11 +7,14 @@ if (sessionStorage.getItem("terminalCache")) {
     console.error(e);
   }
 }
+
+let terminalAmount = 400;
+
 export default function terminalReducer(state = initialState, action) {
   switch (action.type) {
     case "socket/event/server/terminalMessage":
       let stateCopy = JSON.parse(JSON.stringify(state));
-      if (state.length >= 50) {
+      if (state.length >= terminalAmount) {
         stateCopy.shift();
       }
 
@@ -33,6 +36,15 @@ export default function terminalReducer(state = initialState, action) {
       }
 
       return stateCopy;
+    case "api/settings/store":
+      if (action.settingData["N_clientTerminalAmount"] != null) {
+        terminalAmount =
+          action.settingData["N_clientTerminalAmount"] == 0
+            ? 400
+            : action.settingData["N_clientTerminalAmount"];
+      }
+      terminalAmount = 400;
+      return state;
   }
 
   return state;
