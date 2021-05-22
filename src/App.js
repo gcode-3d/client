@@ -25,19 +25,30 @@ export default function App() {
   function handleLogin(token) {
     if (token) {
       let url =
-        process.env.NODE_ENV === "production"
-          ? window.location.protocol === "https:"
-            ? "wss://" + window.location.host + "/ws"
-            : "ws://" + window.location.host + "/ws"
-          : "ws://localhost:8000/ws";
+        window.location.protocol === "https:"
+          ? "wss://" +
+            window.location.hostname +
+            ":" +
+            window.location.port +
+            "/ws"
+          : "ws://" +
+            window.location.hostname +
+            ":" +
+            window.location.port +
+            "/ws";
       dispatch(socketConnect(url, token));
     } else if (user.token) {
       let url =
-        process.env.NODE_ENV === "production"
-          ? window.location.protocol === "https:"
-            ? "wss://" + window.location.host + "/ws"
-            : "ws://" + window.location.host + "/ws"
-          : "ws://localhost:8000/ws";
+        window.location.protocol === "https:"
+          ? "wss://" +
+            window.location.hostname +
+            (process.env.NODE_ENV == "production" ? "" : ":8000") +
+            "/ws"
+          : "ws://" +
+            window.location.hostname +
+            (process.env.NODE_ENV == "production" ? "" : ":8000") +
+            "/ws";
+
       dispatch(socketConnect(url, user.token));
     }
 
