@@ -64,6 +64,12 @@ const websocketMiddleware = () => {
         if (socket !== null) {
           socket.close();
         }
+        if (!action.token) {
+          localStorage.removeItem("auth");
+          sessionStorage.removeItem("auth");
+          window.location.reload();
+          return;
+        }
 
         socket = new WebSocket(action.host, [action.token]);
 

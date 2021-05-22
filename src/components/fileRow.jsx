@@ -12,6 +12,8 @@ import {
 import FileRowActionButton from "./fileRowActionButton";
 import { useSelector } from "react-redux";
 
+import * as Sentry from "@sentry/react";
+
 export default function FileRow({
   file,
   reloadPage,
@@ -177,7 +179,7 @@ function deleteFile(file, cb) {
       }
     })
     .catch((e) => {
-      console.error(e);
+      Sentry.captureException(e);
       alert("Couldn't remove \"" + file.name + '", Try again later.');
     });
 }
@@ -237,7 +239,7 @@ function renameFile(file, cb) {
       }
     })
     .catch((e) => {
-      console.error(e);
+      Sentry.captureException(e);
       alert("Couldn't rename \"" + file.name + '", Try again later.');
     });
 }

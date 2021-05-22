@@ -1,5 +1,7 @@
 import getURL from "../../tools/geturl";
 import { settingsLoaded } from "../actions/settings";
+import { sentryInit as sentryInitAction } from "../actions/sentry";
+import initSentry from "../../tools/initSentry";
 const apiMiddleWare = () => {
   return (store) => (next) => (action) => {
     switch (action.type) {
@@ -25,7 +27,6 @@ const apiMiddleWare = () => {
             console.log("error", error);
           });
         break;
-
       case "api/connectPrinter":
         PUTRequest(getURL() + "/api/connection", {
           Authorization:
@@ -140,6 +141,24 @@ const apiMiddleWare = () => {
           .catch((error) => {
             console.log("error", error);
           });
+        break;
+      case "api/sentry/fetchDsn":
+        if (window.localStorage.getItem("sentryDSN")) {
+          store.dispatch(
+            sentryInitAction(window.localStorage.getItem("sentryDSN"))
+          );
+        }
+        getRequest(getURL() + "/api/sentry/dsn").then(async (response) => {
+          if (response.ok) {
+            let json = await response.json();
+            store.dispatch(sentryInitAction(json.dsn));
+          }
+        });
+        break;
+      case "api/sentry/sentryInit":
+        window.localStorage.setItem("sentryDSN", action.dsn);
+        initSentry(action.dsn, action.environment);
+        break;
     }
     return next(action);
   };
@@ -203,7 +222,9 @@ function getRequest(url, headers) {
  */
 function genericRequest(url, method, headerData, body) {
   let headers = new Headers();
-
+  if (!headerData) {
+    headerData = {};
+  }
   Object.entries(headerData).forEach((entry) => {
     headers.append(entry[0], entry[1]);
   });

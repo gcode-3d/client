@@ -2,6 +2,7 @@ import { faSpinner } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import "../styles/login.css";
+import * as Sentry from "@sentry/react";
 import GETURL from "../tools/geturl";
 
 module.exports = ({ callback }) => {
@@ -18,10 +19,12 @@ module.exports = ({ callback }) => {
       try {
         var result = await fetch(GETURL() + "/api/ping");
         if (!result.ok && !unmount) {
+          Sentry.captureMessage("TEST!??");
           setCustomError("Error: Cannot connect to server.");
         }
       } catch (e) {
         console.error(e);
+        Sentry.captureException(e);
         if (!unmount) {
           setCustomError("Error: Cannot connect to server.");
         }
@@ -105,7 +108,6 @@ module.exports = ({ callback }) => {
     urlencoded.append("username", username);
     urlencoded.append("password", password);
     urlencoded.append("remember", doRemember ? "true" : false);
-    urlencoded.append("datetime", new Date().toISOString());
 
     var requestOptions = {
       method: "POST",
@@ -118,6 +120,7 @@ module.exports = ({ callback }) => {
       .then((response) => response.json())
       .then((result) => {
         if (result.error) {
+          Sentry.captureException(result.error);
           console.log("error", result.message);
           setCustomError(result.message);
           setBusy(false);
@@ -128,9 +131,9 @@ module.exports = ({ callback }) => {
             } else {
               sessionStorage.setItem("auth", result.token);
             }
-            callback();
+            callback("auth-" + result.token);
           } else {
-            callback(token);
+            throw "No token received";
           }
         }
       })
@@ -138,6 +141,7 @@ module.exports = ({ callback }) => {
         console.log("error", error);
         setCustomError("Something went wrong while logging in.");
         setBusy(false);
+        Sentry.captureException(error);
       });
   }
 };

@@ -1,9 +1,8 @@
 import React, { Suspense, lazy } from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import ErrorBoundary from "./errorBoundary.jsx";
 import PrivateRoute from "./privateRoute";
-
+import * as Sentry from "@sentry/react";
 const Home = React.lazy(() => import("../pages/index"));
 const SettingPage = lazy(() => import("../pages/settings"));
 const UnknownPage = lazy(() => import("../pages/unknown"));
@@ -17,19 +16,19 @@ export default function PageManager(props) {
     <Router>
       <Switch>
         <Route path="/" exact>
-          <ErrorBoundary>
+          <Sentry.ErrorBoundary>
             <Suspense>
               <Home />
             </Suspense>
-          </ErrorBoundary>
+          </Sentry.ErrorBoundary>
         </Route>
 
         <Route path="/notifications">
-          <ErrorBoundary>
+          <Sentry.ErrorBoundary>
             <Suspense>
               <NotificationPage />
             </Suspense>
-          </ErrorBoundary>
+          </Sentry.ErrorBoundary>
         </Route>
 
         <PrivateRoute

@@ -5,7 +5,7 @@ import { socketConnect } from "./redux/actions/socket";
 
 import LoginScreen from "./pages/login";
 import PageManager from "./components/pageManager";
-import ErrorBoundary from "./components/errorBoundary.jsx";
+import * as Sentry from "@sentry/react";
 import LoadingPage from "./pages/loading";
 
 export default function App() {
@@ -22,8 +22,16 @@ export default function App() {
 
   useEffect(handleLogin, []);
 
-  function handleLogin() {
-    if (user.token) {
+  function handleLogin(token) {
+    if (token) {
+      let url =
+        process.env.NODE_ENV === "production"
+          ? window.location.protocol === "https:"
+            ? "wss://" + window.location.host + "/ws"
+            : "ws://" + window.location.host + "/ws"
+          : "ws://localhost:8000/ws";
+      dispatch(socketConnect(url, token));
+    } else if (user.token) {
       let url =
         process.env.NODE_ENV === "production"
           ? window.location.protocol === "https:"
@@ -48,10 +56,10 @@ export default function App() {
   }
 
   return (
-    <ErrorBoundary>
+    <Sentry.ErrorBoundary fallback={"An error has occurred."}>
       <Suspense fallback={<LoadingPage />}>
         <PageManager />
       </Suspense>
-    </ErrorBoundary>
+    </Sentry.ErrorBoundary>
   );
 }

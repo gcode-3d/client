@@ -5,10 +5,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import GETURL from "../tools/geturl";
+import * as Sentry from "@sentry/react";
+import { useDispatch } from "react-redux";
+import { socketConnect } from "../redux/actions/socket";
 
 let activeTimeout;
 let isUnmounted = false;
 export default function SettingRow(props) {
+  const dispatch = useDispatch();
   const [value, setValue] = useState(props.value == null ? "" : props.value);
   const [loading, setLoading] = useState(false);
   const [errorInfo, setError] = useState(null);
@@ -214,17 +218,21 @@ export default function SettingRow(props) {
           props.onValueChange(value);
         } else {
           let text = await response.text();
+          if (response.status == "401") {
+            return dispatch(socketConnect(null));
+          }
           try {
             let json = JSON.parse(text);
             if (json.error) {
               console.error(json.message);
+              Sentry.captureException(json);
               setError("Error: " + json.message);
             } else {
               setError("An error has occured, try again");
               console.error(text);
             }
-          } catch {
-            console.error(">>", text);
+          } catch (e) {
+            Sentry.captureException(e);
             setError("An error has occured, try again");
           }
           setValue(props.value);
