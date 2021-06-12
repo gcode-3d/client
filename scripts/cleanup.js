@@ -1,8 +1,11 @@
-const { readdirSync, unlinkSync } = require("fs");
+const { readdirSync, unlinkSync, accessSync, mkdirSync } = require("fs");
 const path = require("path");
-
-let files = readdirSync(path.join(__dirname, "../dist"));
-
+try {
+  var files = readdirSync(path.join(__dirname, "../dist"));
+} catch {
+  mkdirSync(path.join(__dirname, "../dist"));
+  process.exit();
+}
 files.forEach((file) => {
   unlinkSync(path.join(__dirname, "../dist", file));
 });
