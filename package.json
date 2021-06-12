@@ -28,11 +28,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.13.1",
-    "@parcel/transformer-sass": "^2.0.0-beta.3.1",
     "archiver": "^5.3.0",
     "babel-preset-nano-react-app": "^0.1.0",
     "cssnano": "^4.1.10",
-    "parcel": "^2.0.0-beta.3.1",
+    "parcel": "2.0.0-nightly.481",
     "postcss": "^8.2.6",
     "postcss-modules": "^4.0.0",
     "precss": "^4.0.0",
