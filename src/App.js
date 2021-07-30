@@ -39,15 +39,19 @@ export default function App() {
       dispatch(socketConnect(url, token));
     } else if (user.token) {
       let url =
-        window.location.protocol === "https:"
-          ? "wss://" +
-            window.location.hostname +
-            (process.env.NODE_ENV == "production" ? "" : ":8000") +
-            "/ws"
-          : "ws://" +
-            window.location.hostname +
-            (process.env.NODE_ENV == "production" ? "" : ":8000") +
-            "/ws";
+        process.env.NODE_ENV === "production"
+          ? window.location.protocol === "https:"
+            ? "wss://" +
+              window.location.host +
+              ":" +
+              window.location.port +
+              "/ws"
+            : "ws://" +
+              window.location.host +
+              ":" +
+              window.location.port +
+              "/ws"
+          : "ws://localhost:8000/ws";
 
       dispatch(socketConnect(url, user.token));
     }
