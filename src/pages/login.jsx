@@ -102,17 +102,18 @@ module.exports = ({ callback }) => {
     setError(false);
     setBusy(true);
     var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    myHeaders.append("Content-Type", "application/json");
 
-    var urlencoded = new URLSearchParams();
-    urlencoded.append("username", username);
-    urlencoded.append("password", password);
-    urlencoded.append("remember", doRemember ? "true" : false);
+    let data = JSON.stringify({
+      username,
+      password,
+      remember: doRemember,
+    });
 
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
-      body: urlencoded,
+      body: data,
       redirect: "follow",
     };
     setBusy(true);
