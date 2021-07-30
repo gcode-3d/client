@@ -9,6 +9,7 @@ import { stateUpdate } from "../actions/state";
 import { temperatureChange } from "../actions/temperature";
 import { terminalMessageReceive } from "../actions/terminal";
 import { notificationMessageReceive } from "../actions/notification";
+import GETURL from "../../tools/geturl";
 
 let timeout;
 
@@ -93,6 +94,24 @@ const websocketMiddleware = () => {
           clearTimeout(timeout);
           timeout = null;
         }
+        const controller = new AbortController();
+        const settingTimeout = setTimeout(() => controller.abort(), 4500);
+        fetch(GETURL() + "/api/settings", {
+          headers: {
+            Authorization:
+              localStorage.getItem("auth") || sessionStorage.getItem("auth"),
+          },
+          signal: controller.signal,
+        })
+          .then((result) => {
+            clearTimeout(settingTimeout);
+            if (result.status == 401) {
+              localStorage.removeItem("auth");
+              sessionStorage.removeItem("auth");
+            }
+          })
+          .catch((e) => {});
+
         timeout = setTimeout(() => {
           let url =
             process.env.NODE_ENV === "production"
