@@ -84,7 +84,7 @@ export default function TerminalPage() {
     let headers = new Headers();
     headers.append(
       "Authorization",
-      "auth-" + (localStorage.getItem("auth") || sessionStorage.getItem("auth"))
+      localStorage.getItem("auth") || sessionStorage.getItem("auth")
     );
     headers.append("Content-Type", "application/json");
 

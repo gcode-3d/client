@@ -97,8 +97,16 @@ const websocketMiddleware = () => {
           let url =
             process.env.NODE_ENV === "production"
               ? window.location.protocol === "https:"
-                ? "wss://" + window.location.host + "/ws"
-                : "ws://" + window.location.host + "/ws"
+                ? "wss://" +
+                  window.location.host +
+                  ":" +
+                  window.location.port +
+                  "/ws"
+                : "ws://" +
+                  window.location.host +
+                  ":" +
+                  window.location.port +
+                  "/ws"
               : "ws://localhost:8000/ws";
           store.dispatch(socketConnect(url, store.getState().user.token));
         }, 5000);

@@ -187,7 +187,7 @@ export default function SettingRow(props) {
     var headers = new Headers();
     headers.append(
       "Authorization",
-      "auth-" + (localStorage.getItem("auth") || sessionStorage.getItem("auth"))
+      localStorage.getItem("auth") || sessionStorage.getItem("auth")
     );
     headers.append("Content-Type", "application/json");
 
@@ -201,7 +201,7 @@ export default function SettingRow(props) {
       headers,
       body: json,
     };
-    fetch(GETURL() + "/api/settings/", requestOptions)
+    fetch(GETURL() + "/api/settings", requestOptions)
       .then(async (response) => {
         if (isUnmounted) {
           return;

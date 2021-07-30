@@ -130,7 +130,7 @@ function fetchSettings() {
   var headers = new Headers();
   headers.append(
     "Authorization",
-    "auth-" + (localStorage.getItem("auth") || sessionStorage.getItem("auth"))
+    localStorage.getItem("auth") || sessionStorage.getItem("auth")
   );
 
   var requestOptions = {
@@ -138,7 +138,7 @@ function fetchSettings() {
     headers: headers,
   };
   return new Promise((resolve, reject) => {
-    fetch(GETURL() + "/api/settings/", requestOptions)
+    fetch(GETURL() + "/api/settings", requestOptions)
       .then(async (response) => {
         if (!response.ok) {
           let text = await response.text();

@@ -53,10 +53,10 @@ export default function FilePage() {
     var headers = new Headers();
     headers.append(
       "Authorization",
-      "auth-" +
-        (localStorage.getItem("auth") === null
-          ? sessionStorage.getItem("auth")
-          : localStorage.getItem("auth"))
+
+      localStorage.getItem("auth") === null
+        ? sessionStorage.getItem("auth")
+        : localStorage.getItem("auth")
     );
 
     fetch(getURL() + "/api/files", {

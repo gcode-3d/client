@@ -131,7 +131,7 @@ module.exports = ({ callback }) => {
             } else {
               sessionStorage.setItem("auth", result.token);
             }
-            callback("auth-" + result.token);
+            callback(result.token);
           } else {
             throw "No token received";
           }

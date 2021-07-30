@@ -182,10 +182,9 @@ export default function FileUpload(props) {
     let headers = new Headers();
     headers.append(
       "Authorization",
-      "auth-" +
-        (localStorage.getItem("auth") != null
-          ? localStorage.getItem("auth")
-          : sessionStorage.getItem("auth"))
+      localStorage.getItem("auth") != null
+        ? localStorage.getItem("auth")
+        : sessionStorage.getItem("auth")
     );
     if (force === true) {
       headers.append("X-force-upload", "true");

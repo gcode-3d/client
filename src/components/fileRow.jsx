@@ -160,10 +160,9 @@ function deleteFile(file, cb) {
   let headers = new Headers();
   headers.append(
     "Authorization",
-    "auth-" +
-      (localStorage.getItem("auth") != null
-        ? localStorage.getItem("auth")
-        : sessionStorage.getItem("auth"))
+    localStorage.getItem("auth") != null
+      ? localStorage.getItem("auth")
+      : sessionStorage.getItem("auth")
   );
   fetch(GETURL() + "/api/file/" + file.name, {
     method: "DELETE",
@@ -209,10 +208,9 @@ function renameFile(file, cb) {
   let headers = new Headers();
   headers.append(
     "Authorization",
-    "auth-" +
-      (localStorage.getItem("auth") != null
-        ? localStorage.getItem("auth")
-        : sessionStorage.getItem("auth"))
+    localStorage.getItem("auth") != null
+      ? localStorage.getItem("auth")
+      : sessionStorage.getItem("auth")
   );
   headers.append("Content-Type", "Application/json");
   fetch(GETURL() + "/api/files/rename", {

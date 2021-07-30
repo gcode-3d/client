@@ -230,7 +230,7 @@ function QuickActions({ state }) {
     let headers = new Headers();
     headers.append(
       "Authorization",
-      "auth-" + (localStorage.getItem("auth") || sessionStorage.getItem("auth"))
+      localStorage.getItem("auth") || sessionStorage.getItem("auth")
     );
 
     var requestOptions = {

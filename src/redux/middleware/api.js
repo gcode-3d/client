@@ -10,8 +10,7 @@ const apiMiddleWare = () => {
           getURL() + "/api/print",
           {
             Authorization:
-              "auth-" +
-              (localStorage.getItem("auth") || sessionStorage.getItem("auth")),
+              localStorage.getItem("auth") || sessionStorage.getItem("auth"),
           },
           { printName: action.filename }
         )
@@ -30,8 +29,7 @@ const apiMiddleWare = () => {
       case "api/connectPrinter":
         PUTRequest(getURL() + "/api/connection", {
           Authorization:
-            "auth-" +
-            (localStorage.getItem("auth") || sessionStorage.getItem("auth")),
+            localStorage.getItem("auth") || sessionStorage.getItem("auth"),
         })
           .then((response) => {
             if (!response.ok) {
@@ -48,8 +46,7 @@ const apiMiddleWare = () => {
       case "api/reconnectPrinter":
         POSTRequest(getURL() + "/api/connection", {
           Authorization:
-            "auth-" +
-            (localStorage.getItem("auth") || sessionStorage.getItem("auth")),
+            localStorage.getItem("auth") || sessionStorage.getItem("auth"),
         })
           .then((response) => {
             if (!response.ok) {
@@ -66,8 +63,7 @@ const apiMiddleWare = () => {
       case "api/cancelPrint":
         DELETERequest(getURL() + "/api/print", {
           Authorization:
-            "auth-" +
-            (localStorage.getItem("auth") || sessionStorage.getItem("auth")),
+            localStorage.getItem("auth") || sessionStorage.getItem("auth"),
         })
           .then((response) => {
             if (!response.ok) {
@@ -84,8 +80,7 @@ const apiMiddleWare = () => {
       case "api/disconnectPrinter":
         DELETERequest(getURL() + "/api/connection", {
           Authorization:
-            "auth-" +
-            (localStorage.getItem("auth") || sessionStorage.getItem("auth")),
+            localStorage.getItem("auth") || sessionStorage.getItem("auth"),
         })
           .then((response) => {
             if (!response.ok) {
@@ -101,8 +96,7 @@ const apiMiddleWare = () => {
       case "api/emergency":
         POSTRequest(getURL() + "/api/connection/emergency/", {
           Authorization:
-            "auth-" +
-            (localStorage.getItem("auth") || sessionStorage.getItem("auth")),
+            localStorage.getItem("auth") || sessionStorage.getItem("auth"),
         })
           .then((response) => {
             if (!response.ok) {
@@ -117,10 +111,9 @@ const apiMiddleWare = () => {
           });
         break;
       case "socket/event/server/ready":
-        getRequest(getURL() + "/api/settings/", {
+        getRequest(getURL() + "/api/settings", {
           Authorization:
-            "auth-" +
-            (localStorage.getItem("auth") || sessionStorage.getItem("auth")),
+            localStorage.getItem("auth") || sessionStorage.getItem("auth"),
         })
           .then(async (response) => {
             if (!response.ok) {

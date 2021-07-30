@@ -45,10 +45,9 @@ export default function NotificationPage() {
     var headers = new Headers();
     headers.append(
       "Authorization",
-      "auth-" +
-        (localStorage.getItem("auth") === null
-          ? sessionStorage.getItem("auth")
-          : localStorage.getItem("auth"))
+      localStorage.getItem("auth") === null
+        ? sessionStorage.getItem("auth")
+        : localStorage.getItem("auth")
     );
 
     fetch(getURL() + "/api/notifications", {
@@ -290,8 +289,7 @@ export default function NotificationPage() {
       let headers = new Headers();
       headers.append(
         "authorization",
-        "auth-" +
-          (localStorage.getItem("auth") || sessionStorage.getItem("auth"))
+        localStorage.getItem("auth") || sessionStorage.getItem("auth")
       );
       fetch(
         getURL() +

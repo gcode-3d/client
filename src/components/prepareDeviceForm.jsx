@@ -191,7 +191,7 @@ export default function PrepareDeviceForm({ path }) {
     var myHeaders = new Headers();
     myHeaders.append(
       "Authorization",
-      "auth-" + (localStorage.getItem("auth") || sessionStorage.getItem("auth"))
+      localStorage.getItem("auth") || sessionStorage.getItem("auth")
     );
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
