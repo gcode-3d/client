@@ -42,12 +42,12 @@ export default function App() {
         process.env.NODE_ENV === "production"
           ? window.location.protocol === "https:"
             ? "wss://" +
-              window.location.host +
+              window.location.hostname +
               ":" +
               window.location.port +
               "/ws"
             : "ws://" +
-              window.location.host +
+              window.location.hostname +
               ":" +
               window.location.port +
               "/ws"
