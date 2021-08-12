@@ -107,7 +107,7 @@ export default function TerminalPage() {
         if (!response.ok) {
           return console.error(json.message);
         }
-        let id = json.messageId;
+        let id = json.id;
         if (terminalData.filter((message) => message.id == id).length > 0) {
           return;
         }
