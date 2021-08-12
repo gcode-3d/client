@@ -191,7 +191,7 @@ export default function FileUpload(props) {
     }
     let formData = new FormData();
     formData.append("file", file);
-    fetch(GETURL() + "/api/files/", { method: "PUT", body: formData, headers })
+    fetch(GETURL() + "/api/files/", { method: "POST", body: formData, headers })
       .then((response) => {
         setUploading(false);
 
@@ -204,7 +204,7 @@ export default function FileUpload(props) {
         if (response.status == 413) {
           return setState(3);
         }
-        return setState(-1);
+        return setState(4);
       })
       .catch((e) => {
         console.error(e);
