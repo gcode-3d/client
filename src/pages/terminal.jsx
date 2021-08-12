@@ -18,7 +18,10 @@ export default function TerminalPage() {
   function receiveMessageHandler() {
     setSentMessages(
       sentMessages.filter((message) => {
-        return !terminalData.map((i) => i.id).includes(message.id);
+        return !terminalData
+          .map((i) => i.id)
+          .filter((i) => i)
+          .includes(message.id);
       })
     );
   }
