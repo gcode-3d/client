@@ -4,7 +4,9 @@
   --neutrals_1: #CCCCCC;
   --neutrals_2: #565656;
   --neutrals_3: #2C2C2C;
-  --neutrals_4: #1E1E1E;
+  --neutrals_4: hsl(0, 0%, 12%);
+  --blue_1: #0075FF;
+  --blue_2: #6FBAFF;
 }
 
 body {
@@ -13,6 +15,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--neutrals_4);
+  color: white;
 }
 
 @supports (font-variation-settings: normal) {

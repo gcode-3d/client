@@ -23,3 +23,34 @@ export function fetchUserData(token: string) {
 			});
 	});
 }
+
+export function loginWithUsernamePasswordAPI(
+	username: string,
+	password: string,
+	remember: boolean
+): Promise<string> {
+	return new Promise((resolve, reject) => {
+		const body = {
+			username,
+			password,
+			remember,
+		};
+
+		fetch(`${APIURL}/login`, {
+			body: JSON.stringify(body),
+			method: "POST",
+		})
+			.then(async (response) => {
+				if (response.ok === false) {
+					return reject(response.status);
+				}
+				try {
+					let json = await response.json();
+					return resolve(json.token);
+				} catch (e) {
+					return reject(e);
+				}
+			})
+			.catch(reject);
+	});
+}

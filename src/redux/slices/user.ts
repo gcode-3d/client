@@ -1,36 +1,41 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchUserData } from "../../api/auth";
+
+const initialState: {
+	authState: "AUTHENTICATED" | "NONE" | "AUTHENTICATING" | "AUTH_FAILURE";
+	error?: string | undefined;
+	token?: string;
+	info: Object | undefined;
+} = {
+	authState: "NONE",
+	info: undefined,
+	error: undefined,
+};
 
 const slice = createSlice({
 	name: "user",
-	initialState: {
-		authenticated: false,
-		info: undefined,
-	},
+	initialState,
 	reducers: {
 		loginSuccess(state, action) {
-			state.authenticated = true;
+			state.authState = "AUTHENTICATED";
 			state.info = action.payload.info;
+			state.token = action.payload.token;
 			localStorage.setItem("token", action.payload.token);
 		},
-		logoutSuccess(state, action) {
-			state.authenticated = false;
-			state.info = undefined;
+		loginPending(state) {
+			state.authState = "AUTHENTICATING";
+		},
+		loginFailure(state, action) {
+			state.authState = "AUTH_FAILURE";
+			if (action.payload !== undefined) {
+				state.error = action.payload;
+			}
+		},
+		logoutSuccess(state) {
+			state = initialState;
 			localStorage.removeItem("token");
 		},
 	},
 });
+
 export default slice.reducer;
-
-const { loginSuccess } = slice.actions;
-
-export const validateToken = (token: string) => {
-	fetchUserData(token)
-		.then((userInfo) => {
-			loginSuccess(userInfo);
-		})
-		.catch((e) => {
-			localStorage.removeItem("token");
-			console.error(e);
-		});
-};
+export const actions = slice.actions;

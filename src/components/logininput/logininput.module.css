@@ -1,0 +1,80 @@
+.outer {
+	display: flex;
+	flex-direction: column;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 2rem;
+}
+
+.label {
+	font-style: normal;
+	font-weight: 600;
+	font-size: 18px;
+	line-height: 22px;
+	margin-left: 0.5rem;
+	margin-bottom: 10px;
+}
+
+.input {
+	border-radius: 8px;
+	background-color: var(--neutrals_2);
+	color: white;
+	height: 60px;
+	border: none;
+	box-sizing: border-box;
+	font-size: 16px;
+	padding: 1em;
+}
+
+.input:disabled {
+	filter: brightness(0.6);
+	cursor: not-allowed !important;
+}
+
+.input:focus {
+	outline: 0;
+	box-shadow: none;
+}
+
+.checkbox_outer {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-top: 40px;
+	margin-left: 0.25em;
+}
+
+.checkbox {
+	height: 20px;
+	width: 20px;
+	margin-right: 10px;
+	appearance: none;
+	border-radius: 2px;
+	background-color: var(--neutrals_1);
+	cursor: pointer;
+	transition: background-color .1s ease-in-out;
+}
+
+
+
+.checkbox:checked {
+	background-color: var(--blue_1);
+}
+
+.checkbox:checked:after {
+	content: '\2714';
+	font-size: 14px;
+	position: relative;
+	top: 0px;
+	left: 5px;
+}
+
+.checkbox:not(:checked):disabled {
+	cursor: not-allowed;
+	filter: brightness(0.27)
+}
+
+.checkbox:disabled {
+	cursor: not-allowed;
+	filter: brightness(0.80)
+}

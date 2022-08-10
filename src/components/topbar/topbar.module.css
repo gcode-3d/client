@@ -1,0 +1,28 @@
+.topbar {
+	background: var(--neutrals_3);
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	height: 80px;
+	border-bottom: var(--blue_1) 2px solid;
+	box-sizing: border-box;
+}
+
+.icon {
+	display: block;
+	margin: 15px;
+	height: 50px;
+	width: 50px;
+	border-radius: 50%;
+	background-color: var(--blue_1);
+	color: var(--blue_2);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.inner_icon {
+	width: 30px;
+	height: 30px;
+}
