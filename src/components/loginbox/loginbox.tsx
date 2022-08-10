@@ -18,7 +18,6 @@ export default function LoginBox() {
 	) : (
 		<>Log in</>
 	);
-	console.log(user);
 	const notification = (
 		<div className={styles.notification}>
 			<b>Error:</b>
