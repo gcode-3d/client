@@ -7,6 +7,7 @@ import LoginPage from "./pages/login";
 import "./icons";
 import { fetchUserData } from "./api/auth";
 import { actions } from "./redux/slices/user";
+import App from "./App";
 
 const root = ReactDOM.createRoot(
 	document.getElementById("root") as HTMLElement
@@ -15,7 +16,7 @@ const root = ReactDOM.createRoot(
 root.render(
 	<React.StrictMode>
 		<Provider store={store}>
-			<LoginPage />
+			<App />
 		</Provider>
 	</React.StrictMode>
 );
@@ -24,7 +25,12 @@ if (localStorage.getItem("token")) {
 	store.dispatch(actions.loginPending());
 	fetchUserData(localStorage.getItem("token")!)
 		.then((data) => {
-			store.dispatch(actions.loginSuccess(data));
+			store.dispatch(
+				actions.loginSuccess({
+					info: data,
+					token: localStorage.getItem("token"),
+				})
+			);
 		})
 		.catch((e) => {
 			console.error(e);

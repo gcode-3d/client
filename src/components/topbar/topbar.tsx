@@ -5,12 +5,11 @@ import Tag from "../tag/tag";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function TopBar() {
-	const user = useAppSelector((state) => state.user.info);
+	const username = useAppSelector((state) => state.user.info?.name);
 	let userTag = null;
-	// if (user != undefined) {
-	// 	userTag = <Tag icon="test" text={user!.} />;
-	// }
-	userTag = <Tag icon="test" text="Tobias=-test" marginRight={200} />;
+	if (username !== undefined) {
+		userTag = <Tag icon="test" text={username} marginRight={200} />;
+	}
 	return (
 		<div className={styles.topbar}>
 			<div className={styles.icon}>

@@ -35,10 +35,12 @@ export function loginWithUsernamePasswordAPI(
 			password,
 			remember,
 		};
-
+		const headers = new Headers();
+		headers.set("Content-Type", "application/json");
 		fetch(`${APIURL}/login`, {
 			body: JSON.stringify(body),
 			method: "POST",
+			headers,
 		})
 			.then(async (response) => {
 				if (response.ok === false) {

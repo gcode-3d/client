@@ -74,20 +74,38 @@ export default function LoginBox() {
 					.then((userData) => {
 						if (new Date().getTime() - time < 500) {
 							setTimeout(() => {
-								dispatch(actions.loginSuccess(userData));
+								dispatch(
+									actions.loginSuccess({
+										info: userData,
+										token,
+									})
+								);
 							}, 500 - (new Date().getTime() - time));
 						} else {
-							dispatch(actions.loginSuccess(userData));
+							dispatch(
+								actions.loginSuccess({
+									info: userData,
+									token,
+								})
+							);
 						}
 					})
 					.catch((e) => {
 						console.error(e);
 						if (new Date().getTime() - time < 500) {
 							setTimeout(() => {
-								dispatch(actions.loginFailure(e));
+								dispatch(
+									actions.loginFailure(
+										typeof e === "string" ? e : e.toString()
+									)
+								);
 							}, 500 - (new Date().getTime() - time));
 						} else {
-							dispatch(actions.loginFailure(e));
+							dispatch(
+								actions.loginFailure(
+									typeof e === "string" ? e : e.toString()
+								)
+							);
 						}
 					});
 			})
@@ -95,10 +113,18 @@ export default function LoginBox() {
 				console.error(e);
 				if (new Date().getTime() - time < 500) {
 					setTimeout(() => {
-						dispatch(actions.loginFailure(e));
+						dispatch(
+							actions.loginFailure(
+								typeof e === "string" ? e : e.toString()
+							)
+						);
 					}, 500 - (new Date().getTime() - time));
 				} else {
-					dispatch(actions.loginFailure(e));
+					dispatch(
+						actions.loginFailure(
+							typeof e === "string" ? e : e.toString()
+						)
+					);
 				}
 			});
 	}

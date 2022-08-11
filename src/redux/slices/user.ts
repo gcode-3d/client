@@ -4,7 +4,7 @@ const initialState: {
 	authState: "AUTHENTICATED" | "NONE" | "AUTHENTICATING" | "AUTH_FAILURE";
 	error?: string | undefined;
 	token?: string;
-	info: Object | undefined;
+	info: any | undefined;
 } = {
 	authState: "NONE",
 	info: undefined,
@@ -30,10 +30,7 @@ const slice = createSlice({
 				state.error = action.payload;
 			}
 		},
-		logoutSuccess(state) {
-			state = initialState;
-			localStorage.removeItem("token");
-		},
+		logoutSuccess: () => initialState,
 	},
 });
 
