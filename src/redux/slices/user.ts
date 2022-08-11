@@ -30,7 +30,10 @@ const slice = createSlice({
 				state.error = action.payload;
 			}
 		},
-		logoutSuccess: () => initialState,
+		logoutSuccess: () => {
+			localStorage.removeItem("token");
+			return initialState;
+		},
 	},
 });
 
